@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">EFEED</string>
+
+    <string-array name="loop_array">
+        <item>Outer one-way</item>
+        <item>Outer one cycle</item>
+        <item>Outer program</item>
+        <item>Inner one-way</item>
+        <item>Inner one cycle</item>
+        <item>Inner program</item>
+    </string-array>
+    <!-- Preference Titles -->
+
+    <!-- Messages Preferences -->
+
+    <!-- Sync Preferences -->
+    <string name="thread">РЕЗЬБА</string>
+    <string name="feed">ПОДАЧА</string>
+    <string name="sns">stop\n&amp;\nsave</string>
+    <string name="stop">STOP</string>
+    <string name="pitch_unit">mm</string>
+    <string name="feed_unit">mm/rev </string>
+    <string name="feed_unit_metric_G95">mm/rev </string>
+    <string name="feed_unit_metric_G94">mm/min </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="inch">inch</string>
+    <string name="metric">mm</string>
+
+
+</resources>

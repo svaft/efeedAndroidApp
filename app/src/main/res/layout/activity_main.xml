@@ -1,0 +1,863 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadingEdge="none"
+    android:keepScreenOn="true"
+    android:visibility="visible"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:backgroundTintMode="add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <ImageButton
+            android:id="@+id/btFastLeft"
+            android:layout_width="90dp"
+            android:layout_height="140dp"
+            android:background="@android:drawable/btn_default"
+            android:backgroundTintMode="src_in"
+            android:hapticFeedbackEnabled="true"
+            android:longClickable="true"
+            android:onClick="onClickFastLeft"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_media_rew"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/btFastRight"
+            android:layout_width="90dp"
+            android:layout_height="140dp"
+            android:background="@android:drawable/btn_default"
+            android:hapticFeedbackEnabled="true"
+            android:onClick="onClickFastRight"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/btChamfer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_media_ff"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/btChamfer"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@android:drawable/btn_default"
+            android:hapticFeedbackEnabled="true"
+            android:rotation="0"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toEndOf="@+id/btFastLeft"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_untitled__7_"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/btFF"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:background="@android:drawable/btn_default"
+            android:hapticFeedbackEnabled="true"
+            android:onClick="onClickFF"
+            android:rotation="0"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="@+id/btChamfer"
+            app:layout_constraintTop_toBottomOf="@+id/btChamfer"
+            app:srcCompat="@drawable/ic_outline_fast_forward_24"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
+        <ImageButton
+            android:id="@+id/btFB"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="2dp"
+            android:background="@android:drawable/btn_default"
+            android:hapticFeedbackEnabled="true"
+            android:onClick="onClickFB"
+            android:rotation="0"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="@+id/btFF"
+            app:layout_constraintTop_toBottomOf="@+id/btFF"
+            app:srcCompat="@drawable/ic_outline_fast_backward_24"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/tvZLabel"
+            android:layout_width="130dp"
+            android:layout_height="48dp"
+            android:background="@android:drawable/btn_default_small"
+            android:clickable="true"
+            android:gravity="top"
+            android:longClickable="true"
+            android:onClick="onClickZ"
+            android:text="Z: 0.00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btFastTakeAway" />
+
+        <TextView
+            android:id="@+id/tvXLabel"
+            android:layout_width="130dp"
+            android:layout_height="48dp"
+            android:background="@android:drawable/btn_default_small"
+            android:clickable="true"
+            android:gravity="top"
+            android:longClickable="true"
+            android:onClick="onClickX"
+            android:text="Xr: 0.00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/tvZLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvZLabel" />
+
+
+        <EditText
+            android:id="@+id/tvXLabelGlobal"
+            android:layout_width="100dp"
+            android:layout_height="43dp"
+            android:background="@android:drawable/editbox_dropdown_light_frame"
+            android:cursorVisible="false"
+            android:ems="10"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            android:onClick="onEditTextClickSelectAll"
+            android:selectAllOnFocus="true"
+            android:text="0.00"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
+            app:layout_constraintStart_toEndOf="@+id/tvXLabel"
+            app:layout_constraintTop_toTopOf="@+id/tvXLabel"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+
+
+        <EditText
+            android:id="@+id/tvZLabelGlobal"
+            android:layout_width="100dp"
+            android:layout_height="43dp"
+            android:background="@android:drawable/editbox_dropdown_light_frame"
+            android:cursorVisible="false"
+            android:ems="10"
+            android:enabled="false"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            android:onClick="onEditTextClickSelectAll"
+            android:selectAllOnFocus="true"
+            android:text="0.00"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvZLabel"
+            app:layout_constraintStart_toEndOf="@+id/tvXLabel"
+            app:layout_constraintTop_toTopOf="@+id/tvZLabel"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:elevation="3dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/btPause"
+            app:layout_constraintEnd_toEndOf="@+id/btPause"
+            app:srcCompat="@drawable/baseline_home_24" />
+
+        <Button
+            android:id="@+id/btPause"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:hapticFeedbackEnabled="true"
+            android:insetTop="0dp"
+            android:onClick="onPauseClick"
+            android:text="II"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btFastRight"
+            app:layout_constraintStart_toEndOf="@+id/btFastRight" />
+
+        <Button
+            android:id="@+id/btMain"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:hapticFeedbackEnabled="true"
+            android:insetTop="0dp"
+            android:text="@string/feed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintBottom_toBottomOf="@+id/btFB"
+            app:layout_constraintStart_toEndOf="@+id/btFB" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/btFastRight"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:hint="test"
+                android:onClick="onRadioButtonThreadClicked"
+                android:text="@string/thread"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:onClick="onRadioButtonFeedClicked"
+                android:text="@string/feed"
+                android:textAlignment="viewStart"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <ImageButton
+            android:id="@+id/btFastTakeAway"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:background="@android:drawable/btn_default"
+            android:hapticFeedbackEnabled="true"
+            android:longClickable="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/btFB"
+            app:layout_constraintStart_toStartOf="@+id/btFastLeft"
+            app:layout_constraintTop_toTopOf="@+id/btFB"
+            app:srcCompat="@drawable/ic_baseline_south_east_24"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="29dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="-34dp"
+            android:layout_marginBottom="2dp"
+            android:text="0.01"
+            android:textAlignment="viewEnd"
+            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
+            app:layout_constraintEnd_toStartOf="@+id/tvXLabel" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="29dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="2dp"
+            android:text="0.05"
+            android:textAlignment="viewEnd"
+            app:layout_constraintBottom_toBottomOf="@+id/tvZLabel"
+            app:layout_constraintStart_toStartOf="@+id/tvZLabel" />
+
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="101dp"
+            android:layout_height="0dp"
+            android:background="#EF9A9A"
+            android:backgroundTint="#EF9A9A"
+            android:foregroundTint="#EF9A9A"
+            android:onClick="onStop"
+            android:text="!STOP (RESET)"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btMain"
+            app:layout_constraintTop_toBottomOf="@+id/btMain"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.example.myapplication.CustomScrollView
+            android:id="@+id/threadScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/radioGroup"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editTextThreadLength"
+                    android:layout_width="60dp"
+                    android:layout_height="48dp"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="false"
+                    android:text="20"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/tvScrewPitch"
+                    android:layout_width="70dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:text="1.5"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
+
+                <TextView
+                    android:id="@+id/tvScrewPitchUnit"
+                    android:layout_width="90dp"
+                    android:layout_height="48dp"
+                    android:background="@android:drawable/btn_default_small"
+                    android:gravity="center_vertical"
+                    android:onClick="onClickUnit"
+                    android:text="@string/pitch_unit"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/tvScrewPitch"
+                    app:layout_constraintTop_toTopOf="@+id/tvScrewPitch" />
+
+                <EditText
+                    android:id="@+id/editTextMultiThreadCount"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="false"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </com.example.myapplication.CustomScrollView>
+
+
+        <com.example.myapplication.CustomScrollView
+            android:id="@+id/customScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/radioGroup"
+            app:layout_constraintTop_toBottomOf="@+id/threadScrollView">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editTextFeedLength"
+                    android:layout_width="60dp"
+                    android:layout_height="48dp"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="number|numberDecimal"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:text="200"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/tvFeedValue"
+                    android:layout_width="70dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:text="0.1"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFeedUnit"
+                    android:layout_width="90dp"
+                    android:layout_height="48dp"
+                    android:background="@android:drawable/btn_default_small"
+                    android:gravity="center_vertical"
+                    android:hapticFeedbackEnabled="true"
+                    android:longClickable="true"
+                    android:minHeight="48dp"
+                    android:text="@string/feed_unit"
+
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="160dp"
+                    android:layout_height="44dp" />
+
+                <EditText
+                    android:id="@+id/tvTaperValue"
+                    android:layout_width="70dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:onClick="onEditTextClickSelectAll"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:onClick="onLoopClicked"
+                    android:text="LOOP" />
+
+
+            </LinearLayout>
+        </com.example.myapplication.CustomScrollView>
+
+
+        <com.example.myapplication.CustomScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btMain"
+            app:layout_constraintTop_toBottomOf="@+id/customScrollView">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:descendantFocusability="afterDescendants"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewOuterOneWay"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageViewOuterOneWay"
+                        android:layout_width="265dp"
+                        android:layout_height="220dp"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_outer_oneway_ex3d" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewOuterOneCycle"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageOuterOneCycle"
+                        android:layout_width="265dp"
+                        android:layout_height="220dp"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_outer_onecycle_ex3d" />
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginTop="200dp"
+                        android:text="Len:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/tvScrewPitch2"
+                        android:layout_width="70dp"
+                        android:layout_height="35dp"
+                        android:background="#FFFFFF"
+                        android:cursorVisible="false"
+                        android:ems="10"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        android:onClick="onEditTextClickSelectAll"
+                        android:selectAllOnFocus="true"
+                        android:text="20"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+                        app:layout_constraintStart_toEndOf="@+id/textView11"
+                        app:layout_constraintTop_toTopOf="@+id/textView11"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+
+                    <TextView
+                        android:id="@+id/tvReadLogJog"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+
+                        android:backgroundTintMode="add"
+                        android:bufferType="spannable"
+                        android:clickable="true"
+                        android:text="test"
+                        android:textSize="18sp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewOuterProgram"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageOuterProgram"
+                        android:layout_width="265dp"
+                        android:layout_height="220dp"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_outer_full_ex3d" />
+
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="200dp"
+                        android:layout_marginTop="100dp"
+                        android:text="DOC:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/tvDOC"
+                        android:layout_width="60dp"
+                        android:layout_height="35dp"
+                        android:background="#FFFFFF"
+                        android:cursorVisible="false"
+                        android:ems="10"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        android:onClick="onEditTextClickSelectAll"
+                        android:selectAllOnFocus="true"
+                        android:text="0.1"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/textView14"
+                        app:layout_constraintTop_toBottomOf="@+id/textView14"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="84dp"
+                        android:layout_marginTop="84dp"
+                        android:text="D:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/tvOuterCutTargetDiameter"
+                        android:layout_width="70dp"
+                        android:layout_height="35dp"
+                        android:background="#FFFFFF"
+                        android:cursorVisible="false"
+                        android:ems="10"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        android:onClick="onOuterCutTargetDiameter"
+                        android:selectAllOnFocus="true"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView15"
+                        app:layout_constraintStart_toEndOf="@+id/textView15"
+                        app:layout_constraintTop_toTopOf="@+id/textView15"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewInnerOneWay"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageViewInnerOneWay"
+                        android:layout_width="265dp"
+                        android:layout_height="156dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="28dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_inner_one_ex" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewInnerOneCycle"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageViewInnerOneCycle"
+                        android:layout_width="265dp"
+                        android:layout_height="156dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="28dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_inner_one_ex" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/viewInnerProgram"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#DADADA">
+
+                    <ImageView
+                        android:id="@+id/imageViewInnerProgram"
+                        android:layout_width="265dp"
+                        android:layout_height="220dp"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitStart"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/left_inner_full_ex3d" />
+
+                    <TextView
+                        android:id="@+id/textView14ip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="200dp"
+                        android:layout_marginTop="100dp"
+                        android:text="DOC:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/tvDOCip"
+                        android:layout_width="60dp"
+                        android:layout_height="35dp"
+                        android:background="#FFFFFF"
+                        android:cursorVisible="false"
+                        android:ems="10"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        android:onClick="onEditTextClickSelectAll"
+                        android:selectAllOnFocus="true"
+                        android:text="0.1"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/textView14ip"
+                        app:layout_constraintTop_toBottomOf="@+id/textView14ip"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/tvReadLog"
+                    android:layout_width="158dp"
+                    android:layout_height="match_parent"
+
+                    android:backgroundTintMode="add"
+                    android:bufferType="spannable"
+                    android:textSize="8sp" />
+            </LinearLayout>
+        </com.example.myapplication.CustomScrollView>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="3dp"
+            android:text="reset"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/button" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutJog"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#C1292929"
+        android:backgroundTintMode="add"
+        android:clickable="false"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <view
+            android:id="@+id/knobZ"
+            class="com.example.myapplication.RotaryKnob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:initialValue="0"
+            app:knobDrawable="@drawable/ic_rotary_knob"
+            app:knobTopDrawable="@drawable/baseline_swap_horiz_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:maxValue="99"
+            app:minValue="0" />
+
+        <view
+            android:id="@+id/knob"
+            class="com.example.myapplication.RotaryKnob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:initialValue="0"
+            app:knobDrawable="@drawable/ic_rotary_knob"
+            app:knobTopDrawable="@drawable/baseline_swap_vert_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:maxValue="49"
+            app:minValue="0" />
+
+        <Button
+            android:id="@+id/btLeave"
+            android:layout_width="133dp"
+            android:layout_height="121dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hapticFeedbackEnabled="true"
+            android:insetTop="0dp"
+            android:onClick="onJogHide"
+            android:text="Leave"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btJogX"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="24dp"
+            android:hapticFeedbackEnabled="true"
+            android:insetTop="0dp"
+            android:onClick="onClickX"
+            android:text="X"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btJogZ"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hapticFeedbackEnabled="true"
+            android:insetTop="0dp"
+            android:onClick="onClickZ"
+            android:text="Z"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

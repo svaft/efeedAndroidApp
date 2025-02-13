@@ -1,0 +1,44 @@
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.8" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_baseline_arrow_forward_24.xml" value="0.25546875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_baseline_north_24.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_baseline_south_24.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_baseline_south_east_24.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_d1.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_d2.xml" value="0.8" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_d3.xml" value="0.33125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_d4.xml" value="0.33125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_f1.xml" value="0.4" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_lathe_coordinates_behind_center.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_launcher_background.xml" value="0.23125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_outline_fast_backward_24.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_outline_fast_forward_24.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_t1.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_thread__psf_.xml" value="0.23125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_untitled__6_.xml" value="0.23125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_untitled__7_.xml" value="0.23125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/icon_right.xml" value="0.23125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/progress_drawable_vertical.xml" value="0.43671875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/activity_display_message.xml" value="0.51875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/activity_main.xml" value="0.536" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/activity_main_cp.xml" value="0.4125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/item_page.xml" value="0.4125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/thread_fragment_pager.xml" value="0.72" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/layout/view1.xml" value="0.51875" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.33125" />
+        <entry key="..\:/Users/sevtaranov/AndroidStudioProjects/MyApplication/app/src/main/res/xml/root_preferences.xml" value="0.20703125" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

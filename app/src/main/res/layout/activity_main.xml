@@ -151,12 +151,12 @@
             android:layout_width="100dp"
             android:layout_height="43dp"
             android:background="@android:drawable/editbox_dropdown_light_frame"
+            android:clickable="false"
             android:cursorVisible="false"
             android:ems="10"
             android:enabled="false"
             android:imeOptions="actionDone"
             android:inputType="numberDecimal"
-            android:onClick="onEditTextClickSelectAll"
             android:selectAllOnFocus="true"
             android:text="0.00"
             android:textAlignment="center"
@@ -276,15 +276,16 @@
             android:id="@+id/button"
             android:layout_width="101dp"
             android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
             android:background="#EF9A9A"
             android:backgroundTint="#EF9A9A"
             android:foregroundTint="#EF9A9A"
             android:onClick="onStop"
             android:text="!STOP (RESET)"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
             app:layout_constraintEnd_toEndOf="@+id/btMain"
             app:layout_constraintTop_toBottomOf="@+id/btMain"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <com.example.myapplication.CustomScrollView
             android:id="@+id/threadScrollView"
@@ -505,6 +506,92 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/left_outer_oneway_ex3d" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayoutJog"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="#C1292929"
+                        android:backgroundTintMode="add"
+                        android:clickable="false"
+                        android:visibility="invisible">
+
+                        <view
+                            android:id="@+id/knobZ"
+                            class="com.example.myapplication.RotaryKnob"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            app:initialValue="0"
+                            app:knobDrawable="@drawable/ic_rotary_knob"
+                            app:knobTopDrawable="@drawable/baseline_swap_horiz_24"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:maxValue="99"
+                            app:minValue="0" />
+
+                        <view
+                            android:id="@+id/knob"
+                            class="com.example.myapplication.RotaryKnob"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:initialValue="0"
+                            app:knobDrawable="@drawable/ic_rotary_knob"
+                            app:knobTopDrawable="@drawable/baseline_swap_vert_24"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:maxValue="49"
+                            app:minValue="0" />
+
+                        <Button
+                            android:id="@+id/btLeave"
+                            android:layout_width="133dp"
+                            android:layout_height="121dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:hapticFeedbackEnabled="true"
+                            android:insetTop="0dp"
+                            android:onClick="onJogHide"
+                            android:text="Leave"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/btJogX"
+                            android:layout_width="100dp"
+                            android:layout_height="150dp"
+                            android:layout_marginBottom="24dp"
+                            android:hapticFeedbackEnabled="true"
+                            android:insetTop="0dp"
+                            android:onClick="onClickX"
+                            android:text="X"
+                            android:textSize="26sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/btJogZ"
+                            android:layout_width="100dp"
+                            android:layout_height="150dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:hapticFeedbackEnabled="true"
+                            android:insetTop="0dp"
+                            android:onClick="onClickZ"
+                            android:text="Z"
+                            android:textSize="26sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -756,107 +843,6 @@
             </LinearLayout>
         </com.example.myapplication.CustomScrollView>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="3dp"
-            android:text="reset"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/button" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutJog"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#C1292929"
-        android:backgroundTintMode="add"
-        android:clickable="false"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <view
-            android:id="@+id/knobZ"
-            class="com.example.myapplication.RotaryKnob"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:initialValue="0"
-            app:knobDrawable="@drawable/ic_rotary_knob"
-            app:knobTopDrawable="@drawable/baseline_swap_horiz_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxValue="99"
-            app:minValue="0" />
-
-        <view
-            android:id="@+id/knob"
-            class="com.example.myapplication.RotaryKnob"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:initialValue="0"
-            app:knobDrawable="@drawable/ic_rotary_knob"
-            app:knobTopDrawable="@drawable/baseline_swap_vert_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxValue="49"
-            app:minValue="0" />
-
-        <Button
-            android:id="@+id/btLeave"
-            android:layout_width="133dp"
-            android:layout_height="121dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hapticFeedbackEnabled="true"
-            android:insetTop="0dp"
-            android:onClick="onJogHide"
-            android:text="Leave"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btJogX"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="24dp"
-            android:hapticFeedbackEnabled="true"
-            android:insetTop="0dp"
-            android:onClick="onClickX"
-            android:text="X"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btJogZ"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hapticFeedbackEnabled="true"
-            android:insetTop="0dp"
-            android:onClick="onClickZ"
-            android:text="Z"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

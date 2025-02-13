@@ -84,8 +84,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
     private var controllerX: Short = 0
     private var controllerZ: Short = 0
 
-    private var mX = 0.0f
-    private var mZ = 0.0f
+//    private var mX = 0.0f
+//    private var mZ = 0.0f
 
     private var mXlimbInitial: Boolean = true
     private var mXlimb = 0
@@ -522,16 +522,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         }
 
         tvXLabel.setOnLongClickListener {
-            mX = 0.0f
+    //        mX = 0.0f
             mXlimb = 0
             tvXLabel.text = "Xr: 0.00"
             putLog("zero X")
             true
         }
         tvZLabel.setOnLongClickListener {
-            mZ = 0.0f
+    //        mZ = 0.0f
             mZlimb = 0
-            tvZLabel.text = "0.00"
+            tvZLabel.text = "Z: 0.00"
             putLog("zero Z")
             true
         }
@@ -651,15 +651,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
             bt.autoConnect("EFEED")
 
             bt.setOnDataReceivedListener { data, message ->
-                if (message == "!w") {
-                    mX += 0.01f
-                } else if (message == "!s") {
-                    mX -= 0.01f
-                } else if (message == "!a") {
-                    mZ += 0.05f
-                } else if (message == "!d") {
-                    mZ -= 0.05f
-                } else if (message.startsWith("!!!!")) {
+//                if (message == "!w") {
+//                    mX += 0.01f
+//                } else if (message == "!s") {
+//                    mX -= 0.01f
+//                } else if (message == "!a") {
+//                    mZ += 0.05f
+//                } else if (message == "!d") {
+//                    mZ -= 0.05f
+//                } else
+                if (message.startsWith("!!!!")) {
                     try {
                         extractXZ(data)
                     } catch (ex: Exception) {
@@ -690,8 +691,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
             else
                 mZlimb +=delta
             controllerZ = z
-            mZ = z/160.0f
-            val getZ = String.format("%.2f", mZ).replace(',','.') //diameter mode, dive by 50
+//            mZ = z/160.0f
+//            val getZ = String.format("%.2f", mZ).replace(',','.') //diameter mode, dive by 50
             tvZLabel.text = "Z: "+ String.format("%.2f", mZlimb /160.0f)
             tvZLabelGlobal.text = String.format("%.2f", controllerZ /160.0f)
         }
@@ -703,7 +704,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
             else
                 mXlimb +=delta
             controllerX = x
-            mX = x/50.0f
+//            mX = x/50.0f
 //            val getX = String.format("%.2f", mX).replace(',','.') //diameter mode, dive by 50
             tvXLabel.text = "Xr: "+ String.format("%.2f", mXlimb /100.0f)
             tvXLabelGlobal.text = String.format(locale = Locale.ROOT, "%.2f", controllerX /50.0f) //.replace(',','.')
@@ -723,6 +724,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
                     fab.setBackgroundColor(Color.GREEN)
                     outerCutTargetDiameterMod = false
                     outerCutSourceDiameterMod = false
+                    mXlimb = 0
+                    mZlimb = 0
+                    mZlimbInitial = true
+                    mXlimbInitial = true
+
                 }
 //                'Z' -> {
 //                    putLog("global Z ${Integer.parseUnsignedInt(data,16)/160.0f}")
@@ -860,8 +866,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
             } else{
                 if(cmdRecorded)
                     putLog("program on pause")
-                else
-                    putLog("no active records to play")
+//                else
+//                    putLog("no active records to play")
 
             }
         }
@@ -1053,7 +1059,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
     }
 
     fun onLongCLickX(v: View) {
-        mX = 0.0f
+        //mX = 0.0f
     }
 
     fun onStop(v: View) {

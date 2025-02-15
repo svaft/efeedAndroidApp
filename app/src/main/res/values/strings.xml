@@ -27,5 +27,22 @@
     <string name="inch">inch</string>
     <string name="metric">mm</string>
 
+    <string-array name="threads_array">
+        <item>0.5mm</item>
+        <item>0.75mm</item>
+        <item>1.0mm</item>
+        <item>1.25mm</item>
+        <item>1.5mm</item>
+        <item>1.75mm</item>
+        <item>2.25mm</item>
+        <item>2.5mm</item>
+        <item>NPT 1/16"</item>
+        <item>NPT 1/8"</item>
+        <item>NPT 1/4"</item>
+        <item>NPT 3/8"</item>
+        <item>NPT 1/2"</item>
+        <item>NPT 3/4"</item>
+        <item>NPT 1"</item>
+    </string-array>
 
 </resources>

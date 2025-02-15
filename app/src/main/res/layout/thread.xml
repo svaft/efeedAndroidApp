@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#6A6A6A"
+    android:fadingEdge="none"
+    android:keepScreenOn="true"
+    android:visibility="visible">
+
+    <EditText
+        android:id="@+id/tvTaperValue"
+        android:layout_width="90dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="120dp"
+        android:background="#FFFFFF"
+        android:cursorVisible="false"
+        android:elevation="3dp"
+        android:ems="10"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp"
+        android:onClick="onEditTextClickSelectAll"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:text="0.00"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:elevation="3dp"
+        android:text="Taper:"
+        app:layout_constraintBottom_toTopOf="@+id/tvTaperValue3"
+        app:layout_constraintStart_toStartOf="@+id/tvTaperValue3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:adjustViewBounds="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/thread2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextThreadLength"
+        android:layout_width="60dp"
+        android:layout_height="48dp"
+        android:cursorVisible="false"
+        android:ems="10"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:onClick="onEditTextClickSelectAll"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:text="20"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/tvScrewPitch"
+        android:layout_width="70dp"
+        android:layout_height="48dp"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:ems="10"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:onClick="onEditTextClickSelectAll"
+        android:selectAllOnFocus="true"
+        android:text="1.5"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/editTextThreadLength"
+        app:layout_constraintTop_toTopOf="@+id/editTextThreadLength"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/tvScrewPitchUnit"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:background="@android:drawable/btn_default_small"
+        android:gravity="center_vertical"
+        android:onClick="onClickUnit"
+        android:text="@string/pitch_unit"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/tvScrewPitch"
+        app:layout_constraintTop_toTopOf="@+id/tvScrewPitch" />
+
+    <EditText
+        android:id="@+id/editTextMultiThreadCount"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:cursorVisible="false"
+        android:ems="10"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:onClick="onEditTextClickSelectAll"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:text="1"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/tvScrewPitchUnit"
+        app:layout_constraintTop_toTopOf="@+id/tvScrewPitchUnit" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="54dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="296dp"
+        android:layout_marginTop="4dp"
+        android:text="ToggleButton"
+        android:textOff="RH"
+        android:textOn="LH"
+        app:layout_constraintStart_toEndOf="@+id/editTextMultiThreadCount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton2"
+        android:layout_width="96dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton"
+        android:textOff="External"
+        android:textOn="Internal"
+        app:layout_constraintStart_toEndOf="@+id/editTextMultiThreadCount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:background="#FFFFFF"
+        android:entries="@array/threads_array"
+        app:layout_constraintStart_toEndOf="@+id/editTextMultiThreadCount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

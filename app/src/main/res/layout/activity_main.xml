@@ -13,13 +13,14 @@
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#6A6A6A"
         android:backgroundTintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="1.0">
 
 
         <ImageButton
@@ -105,8 +106,35 @@
             android:text="Z: 0.00"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@+id/tvZLabel2"
+            app:layout_constraintTop_toBottomOf="@+id/btFastTakeAway" />
+
+        <TextView
+            android:id="@+id/tvZLabel2"
+            android:layout_width="55dp"
+            android:layout_height="96dp"
+            android:background="@android:drawable/btn_default_small"
+            android:clickable="true"
+            android:gravity="center|top"
+            android:longClickable="true"
+            android:onClick="onClickZ"
+            android:text="home"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btFastTakeAway" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="45dp"
+            android:layout_height="46dp"
+            android:elevation="3dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/tvZLabel2"
+            app:layout_constraintEnd_toEndOf="@+id/tvZLabel2"
+            app:layout_constraintStart_toStartOf="@+id/tvZLabel2"
+            app:srcCompat="@drawable/baseline_home_24" />
 
         <TextView
             android:id="@+id/tvXLabel"
@@ -205,35 +233,16 @@
             app:layout_constraintBottom_toBottomOf="@+id/btFB"
             app:layout_constraintStart_toEndOf="@+id/btFB" />
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/btFastRight"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:hint="test"
-                android:onClick="onRadioButtonThreadClicked"
-                android:text="@string/thread"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <RadioButton
-                android:id="@+id/radioButton3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:onClick="onRadioButtonFeedClicked"
-                android:text="@string/feed"
-                android:textAlignment="viewStart"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </RadioGroup>
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="29dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="-34dp"
+            android:layout_marginBottom="2dp"
+            android:text="0.01"
+            android:textAlignment="viewEnd"
+            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
+            app:layout_constraintEnd_toStartOf="@+id/tvXLabel" />
 
         <ImageButton
             android:id="@+id/btFastTakeAway"
@@ -250,17 +259,6 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="29dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="-34dp"
-            android:layout_marginBottom="2dp"
-            android:text="0.01"
-            android:textAlignment="viewEnd"
-            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
-            app:layout_constraintEnd_toStartOf="@+id/tvXLabel" />
-
-        <TextView
             android:id="@+id/textView3"
             android:layout_width="29dp"
             android:layout_height="20dp"
@@ -271,577 +269,93 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvZLabel"
             app:layout_constraintStart_toStartOf="@+id/tvZLabel" />
 
-
         <Button
             android:id="@+id/button"
-            android:layout_width="101dp"
+            android:layout_width="70dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:background="#EF9A9A"
             android:backgroundTint="#EF9A9A"
+            android:fontFamily="sans-serif-medium"
             android:foregroundTint="#EF9A9A"
             android:onClick="onStop"
-            android:text="!STOP (RESET)"
-            app:layout_constraintBottom_toBottomOf="@+id/tvXLabel"
+            android:text="STOP -------- RESET"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/btPause"
             app:layout_constraintEnd_toEndOf="@+id/btMain"
-            app:layout_constraintTop_toBottomOf="@+id/btMain"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toStartOf="@+id/btPause"
+            app:layout_constraintTop_toTopOf="@+id/btFastRight" />
 
-        <com.example.myapplication.CustomScrollView
-            android:id="@+id/threadScrollView"
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/radioGroup"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="41dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/btStateView"
+            app:layout_constraintStart_toEndOf="@+id/btPause"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabIndicatorColor="#FF5722"
+            app:tabMode="scrollable"
+            app:tabRippleColor="#E61E62"
+            app:tabSelectedTextColor="#FF9800">
 
-            <LinearLayout
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/odtab"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:text="OD turning" />
 
-                <EditText
-                    android:id="@+id/editTextThreadLength"
-                    android:layout_width="60dp"
-                    android:layout_height="48dp"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="false"
-                    android:text="20"
-                    android:textAlignment="center"
-                    android:textIsSelectable="false"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/tvScrewPitch"
-                    android:layout_width="70dp"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:text="1.5"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    tools:ignore="DuplicateSpeakableTextCheck" />
-
-                <TextView
-                    android:id="@+id/tvScrewPitchUnit"
-                    android:layout_width="90dp"
-                    android:layout_height="48dp"
-                    android:background="@android:drawable/btn_default_small"
-                    android:gravity="center_vertical"
-                    android:onClick="onClickUnit"
-                    android:text="@string/pitch_unit"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/tvScrewPitch"
-                    app:layout_constraintTop_toTopOf="@+id/tvScrewPitch" />
-
-                <EditText
-                    android:id="@+id/editTextMultiThreadCount"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="false"
-                    android:text="1"
-                    android:textAlignment="center"
-                    android:textIsSelectable="false"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </com.example.myapplication.CustomScrollView>
-
-
-        <com.example.myapplication.CustomScrollView
-            android:id="@+id/customScrollView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/radioGroup"
-            app:layout_constraintTop_toBottomOf="@+id/threadScrollView">
-
-            <LinearLayout
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/idtab"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:text="ID turning" />
 
-                <EditText
-                    android:id="@+id/editTextFeedLength"
-                    android:layout_width="60dp"
-                    android:layout_height="48dp"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="number|numberDecimal"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:text="200"
-                    android:textAlignment="center"
-                    android:textIsSelectable="false"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/threadtab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="thread" />
 
-                <EditText
-                    android:id="@+id/tvFeedValue"
-                    android:layout_width="70dp"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:minHeight="48dp"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:text="0.1"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="config" />
+        </com.google.android.material.tabs.TabLayout>
 
-                <TextView
-                    android:id="@+id/tvFeedUnit"
-                    android:layout_width="90dp"
-                    android:layout_height="48dp"
-                    android:background="@android:drawable/btn_default_small"
-                    android:gravity="center_vertical"
-                    android:hapticFeedbackEnabled="true"
-                    android:longClickable="true"
-                    android:minHeight="48dp"
-                    android:text="@string/feed_unit"
-
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/spinner2"
-                    android:layout_width="160dp"
-                    android:layout_height="44dp" />
-
-                <EditText
-                    android:id="@+id/tvTaperValue"
-                    android:layout_width="70dp"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:cursorVisible="false"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:minHeight="48dp"
-                    android:onClick="onEditTextClickSelectAll"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <Switch
-                    android:id="@+id/switch2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:onClick="onLoopClicked"
-                    android:text="LOOP" />
-
-
-            </LinearLayout>
-        </com.example.myapplication.CustomScrollView>
-
-
-        <com.example.myapplication.CustomScrollView
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btMain"
-            app:layout_constraintTop_toBottomOf="@+id/customScrollView">
+            app:layout_constraintStart_toStartOf="@+id/tabLayout"
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:descendantFocusability="afterDescendants"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tvFeedValue"
+            android:layout_width="96dp"
+            android:layout_height="19dp"
+            android:padding="2dp"
+            android:shadowColor="@color/black"
+            android:shadowRadius="10"
+            android:text="TextView"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@+id/tvXLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvXLabelGlobal" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewOuterOneWay"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageViewOuterOneWay"
-                        android:layout_width="265dp"
-                        android:layout_height="220dp"
-                        android:layout_marginStart="-20dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_outer_oneway_ex3d" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayoutJog"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="#C1292929"
-                        android:backgroundTintMode="add"
-                        android:clickable="false"
-                        android:visibility="invisible">
-
-                        <view
-                            android:id="@+id/knobZ"
-                            class="com.example.myapplication.RotaryKnob"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible"
-                            app:initialValue="0"
-                            app:knobDrawable="@drawable/ic_rotary_knob"
-                            app:knobTopDrawable="@drawable/baseline_swap_horiz_24"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:maxValue="99"
-                            app:minValue="0" />
-
-                        <view
-                            android:id="@+id/knob"
-                            class="com.example.myapplication.RotaryKnob"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:initialValue="0"
-                            app:knobDrawable="@drawable/ic_rotary_knob"
-                            app:knobTopDrawable="@drawable/baseline_swap_vert_24"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:maxValue="49"
-                            app:minValue="0" />
-
-                        <Button
-                            android:id="@+id/btLeave"
-                            android:layout_width="133dp"
-                            android:layout_height="121dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hapticFeedbackEnabled="true"
-                            android:insetTop="0dp"
-                            android:onClick="onJogHide"
-                            android:text="Leave"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <Button
-                            android:id="@+id/btJogX"
-                            android:layout_width="100dp"
-                            android:layout_height="150dp"
-                            android:layout_marginBottom="24dp"
-                            android:hapticFeedbackEnabled="true"
-                            android:insetTop="0dp"
-                            android:onClick="onClickX"
-                            android:text="X"
-                            android:textSize="26sp"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <Button
-                            android:id="@+id/btJogZ"
-                            android:layout_width="100dp"
-                            android:layout_height="150dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hapticFeedbackEnabled="true"
-                            android:insetTop="0dp"
-                            android:onClick="onClickZ"
-                            android:text="Z"
-                            android:textSize="26sp"
-                            android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewOuterOneCycle"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageOuterOneCycle"
-                        android:layout_width="265dp"
-                        android:layout_height="220dp"
-                        android:layout_marginStart="-20dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_outer_onecycle_ex3d" />
-
-                    <TextView
-                        android:id="@+id/textView11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="200dp"
-                        android:text="Len:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/tvScrewPitch2"
-                        android:layout_width="70dp"
-                        android:layout_height="35dp"
-                        android:background="#FFFFFF"
-                        android:cursorVisible="false"
-                        android:ems="10"
-                        android:imeOptions="actionDone"
-                        android:inputType="numberDecimal"
-                        android:onClick="onEditTextClickSelectAll"
-                        android:selectAllOnFocus="true"
-                        android:text="20"
-                        android:textAlignment="center"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView11"
-                        app:layout_constraintStart_toEndOf="@+id/textView11"
-                        app:layout_constraintTop_toTopOf="@+id/textView11"
-                        tools:ignore="DuplicateSpeakableTextCheck" />
-
-                    <TextView
-                        android:id="@+id/tvReadLogJog"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-
-                        android:backgroundTintMode="add"
-                        android:bufferType="spannable"
-                        android:clickable="true"
-                        android:text="test"
-                        android:textSize="18sp" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewOuterProgram"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageOuterProgram"
-                        android:layout_width="265dp"
-                        android:layout_height="220dp"
-                        android:layout_marginStart="-20dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_outer_full_ex3d" />
-
-
-                    <TextView
-                        android:id="@+id/textView14"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="200dp"
-                        android:layout_marginTop="100dp"
-                        android:text="DOC:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/tvDOC"
-                        android:layout_width="60dp"
-                        android:layout_height="35dp"
-                        android:background="#FFFFFF"
-                        android:cursorVisible="false"
-                        android:ems="10"
-                        android:imeOptions="actionDone"
-                        android:inputType="numberDecimal"
-                        android:onClick="onEditTextClickSelectAll"
-                        android:selectAllOnFocus="true"
-                        android:text="0.1"
-                        android:textAlignment="center"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/textView14"
-                        app:layout_constraintTop_toBottomOf="@+id/textView14"
-                        tools:ignore="DuplicateSpeakableTextCheck" />
-
-                    <TextView
-                        android:id="@+id/textView15"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="84dp"
-                        android:layout_marginTop="84dp"
-                        android:text="D:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/tvOuterCutTargetDiameter"
-                        android:layout_width="70dp"
-                        android:layout_height="35dp"
-                        android:background="#FFFFFF"
-                        android:cursorVisible="false"
-                        android:ems="10"
-                        android:imeOptions="actionDone"
-                        android:inputType="numberDecimal"
-                        android:onClick="onOuterCutTargetDiameter"
-                        android:selectAllOnFocus="true"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView15"
-                        app:layout_constraintStart_toEndOf="@+id/textView15"
-                        app:layout_constraintTop_toTopOf="@+id/textView15"
-                        tools:ignore="DuplicateSpeakableTextCheck" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewInnerOneWay"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageViewInnerOneWay"
-                        android:layout_width="265dp"
-                        android:layout_height="156dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="28dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_inner_one_ex" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewInnerOneCycle"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageViewInnerOneCycle"
-                        android:layout_width="265dp"
-                        android:layout_height="156dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="28dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_inner_one_ex" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/viewInnerProgram"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#DADADA">
-
-                    <ImageView
-                        android:id="@+id/imageViewInnerProgram"
-                        android:layout_width="265dp"
-                        android:layout_height="220dp"
-                        android:layout_marginStart="-20dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/left_inner_full_ex3d" />
-
-                    <TextView
-                        android:id="@+id/textView14ip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="200dp"
-                        android:layout_marginTop="100dp"
-                        android:text="DOC:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/tvDOCip"
-                        android:layout_width="60dp"
-                        android:layout_height="35dp"
-                        android:background="#FFFFFF"
-                        android:cursorVisible="false"
-                        android:ems="10"
-                        android:imeOptions="actionDone"
-                        android:inputType="numberDecimal"
-                        android:onClick="onEditTextClickSelectAll"
-                        android:selectAllOnFocus="true"
-                        android:text="0.1"
-                        android:textAlignment="center"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/textView14ip"
-                        app:layout_constraintTop_toBottomOf="@+id/textView14ip"
-                        tools:ignore="DuplicateSpeakableTextCheck" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                <TextView
-                    android:id="@+id/tvReadLog"
-                    android:layout_width="158dp"
-                    android:layout_height="match_parent"
-
-                    android:backgroundTintMode="add"
-                    android:bufferType="spannable"
-                    android:textSize="8sp" />
-            </LinearLayout>
-        </com.example.myapplication.CustomScrollView>
+        <ImageView
+            android:id="@+id/btStateView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="#FF9800"
+            app:layout_constraintBottom_toBottomOf="@+id/tabLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_bluetooth_searching_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

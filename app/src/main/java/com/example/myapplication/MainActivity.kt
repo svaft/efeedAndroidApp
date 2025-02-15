@@ -1,7 +1,6 @@
 package com.example.myapplication
 
 import android.Manifest
-import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.BLUETOOTH_SCAN
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
@@ -11,10 +10,10 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Message
 import android.os.PowerManager
-import android.text.method.ScrollingMovementMethod
 import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
@@ -25,40 +24,55 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.TextView.OnEditorActionListener
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager.widget.ViewPager
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothSPP.AutoConnectionListener
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.google.android.material.button.MaterialButton
-import kotlinx.coroutines.launch
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import kotlinx.coroutines.sync.Semaphore
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import java.util.Locale
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 
 //import java.util.*
 //@Suppress("UNUSED_PARAMETER")
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, RotaryKnob.RotaryKnobListener {
+class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
+//    , RotaryKnob.RotaryKnobListener
+{
 //    private val viewModel: MyViewModel by viewModels()
 
     //    private var jogLP: Boolean = false
+    private var heartbitMessageCnt: Int = 0
+    private var controllerConnectionState: Int = 0 // 0 - bt not connected, 1 - bt connected, 2 - bt connected and get valid data from efeed
+    private var alreadyGreenState: Boolean = false
+    private var btConnectingBlink: Boolean = false
+
+    private lateinit var mfUpdIf: UpdateableFragment
+    private var activeTabNum: Int = 0
+    private var selectedTabNum: Int = 0
+    private lateinit var pager: ViewPager // creating object of ViewPager
+    private lateinit var tab: TabLayout  // creating object of TabLayout
+    private lateinit var bar: Toolbar    // creating object of ToolBar
+
+    private var ma = this
 
     private var outerCutSourceDiameterMod: Boolean = false
     private var outerCutTargetDiameterMod: Boolean = false
 //    private var pauseProgramFlag: Boolean = false
-    private var internalCut: Boolean = false
+var internalCut: Boolean = false
     private var vaitDocFeedEnd: Boolean = false
 
     private var cmdRecorded = false
@@ -120,12 +134,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 
 
 
-
+    private lateinit var countdownTimer: CountDownTimer
 
     //   lateinit var  jog: RotaryKnob// by lazy { findViewById<RotaryKnobView3>(R.id.jog) }
     //    var timer = Timer()
     private lateinit var bt: BluetoothSPP
-    private lateinit var fab: MaterialButton
+    lateinit var fab: MaterialButton
     private lateinit var FR: ImageButton
     private lateinit var FL: ImageButton
     private lateinit var FF: ImageButton
@@ -134,34 +148,45 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 
     private lateinit var btStop: MaterialButton
 
-    private lateinit var tvRead: TextView
+//    private lateinit var tvRead: TextView
     private lateinit var tvZLabel: TextView
     private lateinit var tvXLabel: TextView
 
     private lateinit var tvXLabelGlobal: TextView
     private lateinit var tvZLabelGlobal: TextView
 
-    private lateinit var tvScrewPitch: TextView
-    private lateinit var tvFeedValue: TextView
-    private lateinit var tvFeedLength: TextView
+    private lateinit var btStateView: ImageView
 
+
+//    private lateinit var tvScrewPitch: TextView
+    private lateinit var tvFeedValue: TextView
+//    private lateinit var tvFeedLength: TextView
+
+
+    lateinit var adapter: ViewPagerAdapter
 
 
     fun putLog(value: String) {
-        log.add("\r\n $value")
-        if (mutex.tryAcquire()) {
-            try {
-                runOnUiThread {
-                    tvRead.text = log.toString()
-//                    tvZLabel.text = "Z: %.${2}f".format(mZ)
-//                    tvXLabel.text = "X: %.${2}f".format(mX)
 
-                    mutex.release()
-                }
-            } catch (ex: Exception) {
-                Log.i("---", "Exception in thread")
-            }
-        }
+        val fragment: confFragment = adapter.getItem(4)  as confFragment
+
+        fragment.putLog(value)
+        return
+//        log.add("\r\n $value")
+//        if (mutex.tryAcquire()) {
+//            try {
+//                runOnUiThread {
+//                    fragment.tvLog.text = log.toString()
+////                    tvZLabel.text = "Z: %.${2}f".format(mZ)
+////                    tvXLabel.text = "X: %.${2}f".format(mX)
+//
+//                    mutex.release()
+//                }
+//            } catch (ex: Exception) {
+//                Log.i("---", "Exception in thread")
+//                mutex.release()
+//            }
+//        }
     }
 
     override fun onPause() {
@@ -193,23 +218,21 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
                 // Permission is granted. Continue the action or workflow in your
                 // app.
             } else {
-                // Explain to the user that the feature is unavailable because the
-                // feature requires a permission that the user has denied. At the
-                // same time, respect the user's decision. Don't link to system
-                // settings in an effort to convince the user to change their
-                // decision.
+
             }
         }
 
 
     var tcnt = 0
+
     @OptIn(ExperimentalStdlibApi::class)
     @SuppressLint("ClickableViewAccessibility", "WrongViewCast", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar!!.hide()
-/*
+        ma = this
+        /*
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -226,40 +249,111 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         }
 */
 
+        pager = findViewById(R.id.view_pager)
+        tab = findViewById(R.id.tabLayout)
+//        bar = findViewById(R.id.toolbar)
+        adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter.addFragment(odFragment(), "OD turn")
+        adapter.addFragment(idFragment(), "ID turn")
+        adapter.addFragment(threadFragment(), "thread")
+        adapter.addFragment(idFragment(), "Face")
+        adapter.addFragment(confFragment(), "...")
+        pager.adapter = adapter
+
+        //bind the viewPager with the TabLayout.
+        tab.setupWithViewPager(pager)
+        val tabs = tab.getChildAt(0) as LinearLayout
+
+        for (i in 0 until tabs.childCount) {
+            val currentTab1 = tabs.getChildAt(i)
+            if(i == 0) {
+                currentTab1.setBackgroundColor(Color.rgb(0x6A, 0x6A, 0x6A))
+            }
+                else
+                currentTab1.setBackgroundColor(Color.WHITE)
+            tabs.getChildAt(i).setOnLongClickListener {
+                for (i2 in 0 until tabs.childCount) {
+                    val currentTab = tabs.getChildAt(i2)
+                    if (i2 == selectedTabNum) {
+                        currentTab.setBackgroundColor(Color.rgb(0x6A, 0x6A, 0x6A))
+                        activeTabNum = selectedTabNum
+
+                        try {
+                            fab.text = mfUpdIf.fabText()
+                            mfUpdIf.update(ma)
+                        } catch (exception: Exception) {
+                            exception.message?.let { putLog(it) }
+                        }
+
+
+                    }
+                    else
+                        currentTab.setBackgroundColor(Color.WHITE)
+                }
+                true
+            }
+        }
+
+//        countdownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds, 1-second intervals
+//            override fun onTick(millisUntilFinished: Long) {
+//                val secondsRemaining = millisUntilFinished / 1000
+//                println("Seconds remaining: $secondsRemaining")
+//            }
+//
+//            override fun onFinish() {
+//                println("Timer finished!")
+//            }
+//        }
+
+        mfUpdIf = adapter.getItem(0) as UpdateableFragment
+        pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab))
+        tab.setOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+//                activeTabNum = tab.position
+                selectedTabNum = tab.position
+                mfUpdIf = adapter.getItem(tab.position) as UpdateableFragment
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+        })
+
+
         when {
             ContextCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.BLUETOOTH_CONNECT
             ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-               // performAction(...)
             }
+
             ActivityCompat.shouldShowRequestPermissionRationale(
-                this, Manifest.permission.BLUETOOTH_CONNECT) -> {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected, and what
-                // features are disabled if it's declined. In this UI, include a
-                // "cancel" or "no thanks" button that lets the user continue
-                // using your app without granting the permission.
-                //showInContextUI(...)
+                this, Manifest.permission.BLUETOOTH_CONNECT
+            ) -> {
             }
+
             else -> {
                 // You can directly ask for the permission.
-                requestPermissions( arrayOf(Manifest.permission.BLUETOOTH_CONNECT, BLUETOOTH_SCAN),
-                    PERMISSION_GRANTED)
+                requestPermissions(
+                    arrayOf(Manifest.permission.BLUETOOTH_CONNECT, BLUETOOTH_SCAN),
+                    PERMISSION_GRANTED
+                )
             }
         }
 
+        btStateView =findViewById(R.id.btStateView)
 
 //        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
         if (!bluetoothAdapter!!.isEnabled) {
             bluetoothAdapter.enable()
-            while (!bluetoothAdapter.isEnabled){
+            while (!bluetoothAdapter.isEnabled) {
                 tcnt++
                 Thread.sleep(100)
-                if(tcnt > 40) { // finish app if bluetooth cant enable more than 4sec
+                if (tcnt > 40) { // finish app if bluetooth cant enable more than 4sec
                     finish()
                     return
                 }
@@ -283,7 +377,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 
                         BluetoothChatService.STATE_CONNECTING -> {}//setStatus(R.string.title_connecting)
                         BluetoothChatService.STATE_LISTEN -> {}
-                        BluetoothChatService.STATE_NONE -> { } //  setStatus(R.string.title_not_connected ) }
+                        BluetoothChatService.STATE_NONE -> {} //  setStatus(R.string.title_not_connected ) }
                     }
 
                     Constants.MESSAGE_WRITE -> {
@@ -314,32 +408,39 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 
 
 
-        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
-        val jogX = findViewById<RotaryKnob>(R.id.knob)
-        jogX.isVisible = false
-        jogX.listener = this
-        jogX.setOnTouchListener { _: View?, event: MotionEvent ->
-            if (event.action == MotionEvent.ACTION_UP && jogLP) {
-                jogLP = false
-                sendCommand("!S")
-            }
-            false
-        }
 
-        val jogZ = findViewById<RotaryKnob>(R.id.knobZ)
-        jogZ.isVisible = false
-        jogZ.listener = this
-        jogZ.setOnTouchListener { _: View?, event: MotionEvent ->
-            if (event.action == MotionEvent.ACTION_UP && jogLP) {
-                jogLP = false
-                sendCommand("!S")
-            }
-            false
-        }
+// todo jog
+//        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
+//        val jogX = findViewById<RotaryKnob>(R.id.knob)
+//        jogX.isVisible = false
+//        jogX.listener = this
+//        jogX.setOnTouchListener { _: View?, event: MotionEvent ->
+//            if (event.action == MotionEvent.ACTION_UP && jogLP) {
+//                jogLP = false
+//                sendCommand("!S")
+//            }
+//            false
+//        }
+//        val jogZ = findViewById<RotaryKnob>(R.id.knobZ)
+//        jogZ.isVisible = false
+//        jogZ.listener = this
+//        jogZ.setOnTouchListener { _: View?, event: MotionEvent ->
+//            if (event.action == MotionEvent.ACTION_UP && jogLP) {
+//                jogLP = false
+//                sendCommand("!S")
+//            }
+//            false
+//        }
 
-        threadMode = (findViewById<View>(R.id.radioButton2) as RadioButton).isChecked
-        tvRead = findViewById(R.id.tvReadLog)
-        tvRead.movementMethod = ScrollingMovementMethod()
+
+
+
+
+        threadMode = false //(findViewById<View>(R.id.radioButton2) as RadioButton).isChecked
+
+//        tvRead = findViewById(R.id.tvReadLog)
+//        tvRead.movementMethod = ScrollingMovementMethod()
+
         FF = findViewById(R.id.btFF)
         FB = findViewById(R.id.btFB)
         FR = findViewById(R.id.btFastRight)
@@ -354,45 +455,47 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         tvZLabelGlobal = findViewById<TextView>(R.id.tvZLabelGlobal)
 
 
-        tvScrewPitch = findViewById(R.id.tvScrewPitch)
+//        tvScrewPitch = findViewById(R.id.tvScrewPitch)
         tvFeedValue = findViewById(R.id.tvFeedValue)
-        tvFeedLength = findViewById(R.id.editTextFeedLength)
+//        tvFeedLength = findViewById(R.id.editTextFeedLength)
+//
+//        viewsMap = mapOf(
+//            0 to findViewById<View>(R.id.viewOuterOneWay),
+//            1 to findViewById<View>(R.id.viewOuterOneCycle),
+//            2 to findViewById<View>(R.id.viewOuterProgram),
+//            3 to findViewById<View>(R.id.viewInnerOneWay),
+//            4 to findViewById<View>(R.id.viewInnerOneCycle),
+//            5 to findViewById<View>(R.id.viewInnerProgram)
+//        )
+//
+//        val spinner: Spinner = findViewById(R.id.spinner2)
 
-        viewsMap = mapOf(
-            0 to findViewById<View>(R.id.viewOuterOneWay),
-            1 to findViewById<View>(R.id.viewOuterOneCycle),
-            2 to findViewById<View>(R.id.viewOuterProgram),
-            3 to findViewById<View>(R.id.viewInnerOneWay),
-            4 to findViewById<View>(R.id.viewInnerOneCycle),
-            5 to findViewById<View>(R.id.viewInnerProgram)
-        )
-
-        val spinner: Spinner = findViewById(R.id.spinner2)
-        val btnChamfer  = findViewById<ImageButton>(R.id.btChamfer)
+        val btnChamfer = findViewById<ImageButton>(R.id.btChamfer)
         val btPause = findViewById<Button>(R.id.btPause)
 
 
-
 // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.loop_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spinner.adapter = adapter
-        }
-        spinner.onItemSelectedListener = this
 
-        spinner.setSelection(currentView)
-        viewsMap.forEach { it.value.isVisible = false }
-        viewsMap[currentView]!!.isVisible = true
+//        ArrayAdapter.createFromResource(
+//            this,
+//            R.array.loop_array,
+//            android.R.layout.simple_spinner_item
+//        ).also { adapter ->
+//            // Specify the layout to use when the list of choices appears
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//            // Apply the adapter to the spinner
+//            spinner.adapter = adapter
+//        }
+//        spinner.onItemSelectedListener = this
+//
+//        spinner.setSelection(currentView)
+//
+//        viewsMap.forEach { it.value.isVisible = false }
+//        viewsMap[currentView]!!.isVisible = true
 
 
 
-        btnChamfer.setOnLongClickListener{
+        btnChamfer.setOnLongClickListener {
             fbChamfer = true
             fbChamferUp = false
             putLog("easy chamfer")
@@ -410,9 +513,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         }
 
 
-        btPause.setOnLongClickListener{
+        btPause.setOnLongClickListener {
             putLog("go home")
-            sendCommand("!1") // yankee go home
+            sendCommand("!1") // yankee go home! todo unclear what target coordinates of home pos, remove button on set it to zero XZ by limb?
         }
 
 
@@ -428,39 +531,40 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         fab.setOnLongClickListener {
             putLog("reset record")
             cmdRecorded = false
+            sendCommand("!S")
             fab.setBackgroundColor(Color.GREEN)
+            btPause.setBackgroundColor(Color.GREEN)
+            pauseProgramFlag = false
 //            mainLp = true
             true
         }
         fab.setOnClickListener {
             if (cmdRecorded) {
-                if(cmdStarted){
-//                    cmdStarted = false
+                if (cmdStarted) {
                     putLog("stop current move")
-                    sendCommand("!S") //repeat last command or quick move to initial position
-//                    fab.setText(R.string.stop)
-                } else{
+                    sendCommand("!S") // stop current move
+                } else {
                     cmdStarted = true
                     putLog("repeat or zero")
                     sendCommand("!3") //repeat last command or quick move to initial position
                     fab.setText(R.string.stop)
                 }
-            } else {
-                if (cmdStarted) { // send command to save last move
+            } else { // command not recorded yet
+                if (cmdStarted) { // command started but not recorded for future replay
                     cmdStarted = false
                     cmdRecorded = true
                     fab.setBackgroundColor(Color.RED)
                     putLog("stop&save last move")
                     sendCommand("!2")
-                    if(currentView == 2 || currentView == 5) { // we in program mode so set on pause to make sure that first cut was correct
+                    if (currentView == 2 || currentView == 5) { // we in program mode so set on pause to make sure that first cut was correct
                         pauseProgramFlag = true
                         findViewById<Button>(R.id.btPause).setBackgroundColor(Color.RED)
                     }
-                    if(threadMode)
+                    if (threadMode)
                         fab.setText(R.string.thread)
                     else
                         fab.setText(R.string.feed)
-                } else {
+                } else { // build command with active TAB config and send it to lathe
                     val cmd = buildCmd()
                     sendCommand(cmd)
                     cmdStarted = true
@@ -479,7 +583,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 //                        outerCutTargetDiameterMod = true
                         onOuterCutSourceDiameterClick(v)
 
-                        val getX = String.format("%.2f", v.text.toString().toFloat()).replace(',','.')
+                        val getX =
+                            String.format("%.2f", v.text.toString().toFloat()).replace(',', '.')
                         tvXLabelGlobal.text = getX
 //                        findViewById<TextView>(R.id.tvOuterCutSourceDiameter).text = getX
                         // the user is done typing.
@@ -516,20 +621,20 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 //        findViewById<View>(R.id.tvOuterCutTargetDiameter).setOnFocusChangeListener{_, b -> outerCutTargetDiameterMod = true }
 //        findViewById<View>(R.id.tvOuterCutSourceDiameter).setOnFocusChangeListener{v, b -> onOuterCutSourceDiameterClick(v) }
 
-        findViewById<View>(R.id.tvFeedUnit).setOnLongClickListener {
-            changeFeedUnit()
-            true
-        }
+//        findViewById<View>(R.id.tvFeedUnit).setOnLongClickListener {
+//            changeFeedUnit()
+//            true
+//        }
 
         tvXLabel.setOnLongClickListener {
-    //        mX = 0.0f
+            //        mX = 0.0f
             mXlimb = 0
             tvXLabel.text = "Xr: 0.00"
             putLog("zero X")
             true
         }
         tvZLabel.setOnLongClickListener {
-    //        mZ = 0.0f
+            //        mZ = 0.0f
             mZlimb = 0
             tvZLabel.text = "Z: 0.00"
             putLog("zero Z")
@@ -624,14 +729,28 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
                 override fun onServiceStateChanged(state: Int) {
                     when (state) {
                         BluetoothState.STATE_CONNECTED -> {
-                            putLog("BT STATE_CONNECTED")
-                            findViewById<ConstraintLayout>(R.id.constraintLayout).forEach {
-                                it.isEnabled = true
-                            }
+                            controllerConnectionState = 1
+                            updateUIbyConnectionState()
                         }
-                        BluetoothState.STATE_CONNECTING -> putLog("BT STATE_CONNECTING")
-                        BluetoothState.STATE_LISTEN -> putLog("BT STATE_LISTEN")
-                        BluetoothState.STATE_NONE -> putLog("BT STATE_NONE")
+
+                        BluetoothState.STATE_CONNECTING -> {
+                            controllerConnectionState = 0
+                            btStateView.setBackgroundColor(Color.RED)
+                            btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+                            putLog("BT STATE_CONNECTING")
+                        }
+                        BluetoothState.STATE_LISTEN -> {
+                            putLog("BT STATE_LISTEN")
+                            controllerConnectionState = 0
+                            btStateView.setBackgroundColor(Color.RED)
+                            btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+                        }
+                        BluetoothState.STATE_NONE -> {
+                            controllerConnectionState = 0
+                            btStateView.setBackgroundColor(Color.RED)
+                            btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+                            putLog("BT STATE_NONE")
+                        }
                     }
                 }
             })
@@ -661,6 +780,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 //                    mZ -= 0.05f
 //                } else
                 if (message.startsWith("!!!!")) {
+                    heartbitMessageCnt++
+                    if(controllerConnectionState != 2){
+                        alreadyGreenState = false
+                        controllerConnectionState = 2
+                        updateUIbyConnectionState()
+                    }
                     try {
                         extractXZ(data)
                     } catch (ex: Exception) {
@@ -668,7 +793,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
                         Log.i("---", "Exception in thread")
                     }
 
-                } else if (message.startsWith("!!!")){
+                } else if (message.startsWith("!!!")) {
                     processMessage(data, message)
                 }
                 if (!message.startsWith("!!!!") && !message.startsWith("!!!"))
@@ -677,7 +802,60 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
             putLog("${tcnt.toString()}")
 
         }
+
+        val timer = Timer()
+        timer.schedule(0, 1000) {
+            if(heartbitMessageCnt < 5)
+            {
+                if(controllerConnectionState == 2 ){ // poor connection link, change to yellow
+                    btStateView.setBackgroundColor(Color.YELLOW)
+                    alreadyGreenState = false
+                } else if(controllerConnectionState == 0){
+                    if(btConnectingBlink){
+                        btConnectingBlink = false
+                        btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+                    } else {
+                        btConnectingBlink = true
+                        btStateView.setImageResource(R.drawable.baseline_bluetooth_24)
+                    }
+                }
+            } else {
+                if(!alreadyGreenState){
+                    alreadyGreenState = true
+                    btStateView.setBackgroundColor(Color.GREEN)
+                }
+            }
+            heartbitMessageCnt = 0
+//            println("Timer ticked!")
+        }
+
     }
+
+    private fun updateUIbyConnectionState() {
+        when(controllerConnectionState){
+            0 -> {
+                btStateView.setBackgroundColor(Color.RED)
+                btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+//                putLog("BT STATE_CONNECTED")
+//                findViewById<ConstraintLayout>(R.id.constraintLayout).forEach {
+//                    it.isEnabled = true
+                }
+            1 -> {
+                btStateView.setBackgroundColor(Color.YELLOW)
+                btStateView.setImageResource(R.drawable.baseline_bluetooth_connected_24)
+                putLog("BT STATE_CONNECTED")
+                findViewById<ConstraintLayout>(R.id.constraintLayout).forEach {
+                    it.isEnabled = true
+                }
+            }
+            2 -> {
+                btStateView.setBackgroundColor(Color.GREEN)
+                btStateView.setImageResource(R.drawable.baseline_bluetooth_connected_24)
+            }
+        }
+
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     private fun extractXZ(data: ByteArray){
         val z: Short = String(data, 4, 4, Charsets.UTF_8).hexToShort()
@@ -771,60 +949,60 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
 
     }
 
-    var currentJog : Int = 0
-    fun onClickZ(v: View){
-        currentJog = JOG_Z
-        findViewById<MaterialButton>(R.id.btJogX).setBackgroundColor(Color.GRAY)
-        findViewById<MaterialButton>(R.id.btJogZ).setBackgroundColor(Color.RED)
-        findViewById<View>(R.id.knob).isVisible = false
-        findViewById<View>(R.id.knobZ).isVisible = true
-        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = true
-    }
-    fun onClickX(v: View){
-        currentJog = JOG_X
-        findViewById<MaterialButton>(R.id.btJogX).setBackgroundColor(Color.RED)
-        findViewById<MaterialButton>(R.id.btJogZ).setBackgroundColor(Color.GRAY)
-
-        findViewById<View>(R.id.knob).isVisible = true
-        findViewById<View>(R.id.knobZ).isVisible = false
-        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = true
-    }
-    fun onJogHide(v: View){
-        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
-    }
-
-    override fun onJogLongPress(e: MotionEvent) {
-        jogLP = true
-        if(currentJog == JOG_X) {
-            if(e.y < 300){
-                sendCommand("G00 X-200")
-            } else if(e.y > 400){
-                sendCommand("G00 X200")
-            }
-        } else if (currentJog ==JOG_Z){
-            if(e.x < 300){
-                sendCommand("G00 Z-200")
-            } else if(e.x > 400){
-                sendCommand("G00 Z200")
-            }
-        }
+//    var currentJog : Int = 0
+//    fun onClickZ(v: View){
+//        currentJog = JOG_Z
+//        findViewById<MaterialButton>(R.id.btJogX).setBackgroundColor(Color.GRAY)
+//        findViewById<MaterialButton>(R.id.btJogZ).setBackgroundColor(Color.RED)
+//        findViewById<View>(R.id.knob).isVisible = false
+//        findViewById<View>(R.id.knobZ).isVisible = true
+//        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = true
+//    }
+//    fun onClickX(v: View){
+//        currentJog = JOG_X
+//        findViewById<MaterialButton>(R.id.btJogX).setBackgroundColor(Color.RED)
+//        findViewById<MaterialButton>(R.id.btJogZ).setBackgroundColor(Color.GRAY)
+//
+//        findViewById<View>(R.id.knob).isVisible = true
+//        findViewById<View>(R.id.knobZ).isVisible = false
+//        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = true
+//    }
+//    fun onJogHide(v: View){
 //        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
-    }
-
-    override fun onJogRotate(value: Int, delta: Int) {
-        if(currentJog == JOG_X) {
-            if(delta>0)
-                sendCommand("!w")
-            else
-                sendCommand("!s")
-        }
-        else {
-            if(delta>0)
-                sendCommand("!d")
-            else
-                sendCommand("!a")
-        }
-    }
+//    }
+//
+//    override fun onJogLongPress(e: MotionEvent) {
+//        jogLP = true
+//        if(currentJog == JOG_X) {
+//            if(e.y < 300){
+//                sendCommand("G00 X-200")
+//            } else if(e.y > 400){
+//                sendCommand("G00 X200")
+//            }
+//        } else if (currentJog ==JOG_Z){
+//            if(e.x < 300){
+//                sendCommand("G00 Z-200")
+//            } else if(e.x > 400){
+//                sendCommand("G00 Z200")
+//            }
+//        }
+////        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
+//    }
+//
+//    override fun onJogRotate(value: Int, delta: Int) {
+//        if(currentJog == JOG_X) {
+//            if(delta>0)
+//                sendCommand("!w")
+//            else
+//                sendCommand("!s")
+//        }
+//        else {
+//            if(delta>0)
+//                sendCommand("!d")
+//            else
+//                sendCommand("!a")
+//        }
+//    }
 
 
     private fun easyChamfer(){
@@ -860,7 +1038,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
                             sendCommand("G00 X -${findViewById<TextView>(R.id.tvDOC).text}")
                         }
                     else
-                        sendCommand("G00 X ${findViewById<TextView>(R.id.tvDOCip).text}")
+                        sendCommand("G00 X ${findViewById<TextView>(R.id.tvDOC).text}")
                     vaitDocFeedEnd = true
                 }
             } else{
@@ -874,6 +1052,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
     }
 
     override fun onDestroy() {
+//        countdownTimer.cancelTimer()
         bt.disconnect()
         bt.stopAutoConnect()
         bt.stopService()
@@ -938,79 +1117,81 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         }
     }
 
-    fun onLoopClicked(v: View) {
-        val checked = (v as Switch).isChecked
-        if (checked) {
-            loopMode = true
-            ping = false
-            putLog("loop mode on")
-            pingpong()
-        } else {
-            if (loopMode) {
-                loopMode = false
-                putLog("loop mode off")
-            }
-        }
-    }
+//    fun onLoopClicked(v: View) {
+//        val checked = (v as Switch).isChecked
+//        if (checked) {
+//            loopMode = true
+//            ping = false
+//            putLog("loop mode on")
+//            pingpong()
+//        } else {
+//            if (loopMode) {
+//                loopMode = false
+//                putLog("loop mode off")
+//            }
+//        }
+//    }
 
-    private fun pingpong() {
-        if (!loopMode) return
-
-//        String minus = ( feed_direction == direction.right || feed_direction == direction.backward )  ? "" : "-";
-        ping = if (!ping) {
-            val cmd = buildCmd()
-            //            String cmd = "G01 Z" + minus + tvFeedLength.getText() +" F" +  tvFeedValue.getText();
-            putLog("ping:$cmd")
-            sendCommand(cmd)
-            true
-        } else {
-            val cmd = "G01 Z0 F" + tvFeedValue.text.toString()
-            putLog("pong:$cmd")
-            sendCommand(cmd)
-            false
-        }
-    }
+//    private fun pingpong() {
+//        if (!loopMode) return
+//
+////        String minus = ( feed_direction == direction.right || feed_direction == direction.backward )  ? "" : "-";
+//        ping = if (!ping) {
+//            val cmd = buildCmd()
+//            //            String cmd = "G01 Z" + minus + tvFeedLength.getText() +" F" +  tvFeedValue.getText();
+//            putLog("ping:$cmd")
+//            sendCommand(cmd)
+//            true
+//        } else {
+//            val cmd = "G01 Z0 F" + tvFeedValue.text.toString()
+//            putLog("pong:$cmd")
+//            sendCommand(cmd)
+//            false
+//        }
+//    }
 
     private fun buildCmd(): String {
-        val minus =
-            if (feedDirection == Direction.Right || feedDirection == Direction.Backward) "" else "-"
-        var gCmd = "G01"
-        var gSub: String
-        val gLength: String
-        var gTaper = ""
-        val axis = if (feedDirection == Direction.Right || feedDirection == Direction.Left) " Z" else " X"
-        val tvLen: TextView
+//        val minus =
+//            if (feedDirection == Direction.Right || feedDirection == Direction.Backward) "" else "-"
+//        var gCmd = "G01"
+//        var gSub: String
+//        val gLength: String
+//        var gTaper = ""
+//        val axis = if (feedDirection == Direction.Right || feedDirection == Direction.Left) " Z" else " X"
+//        val tvLen: TextView
+//
+//        val tvTaperValue = findViewById<TextView>(R.id.tvTaperValue).text.toString().toFloat()
 
-        val tvTaperValue = findViewById<TextView>(R.id.tvTaperValue).text.toString().toFloat()
-
-        if (threadMode) {
-            gCmd = "G33"
-            gSub = "K" + tvScrewPitch.text
-            tvLen = findViewById(R.id.editTextThreadLength)
-            gLength = tvLen.text.toString()
-            val tvMultiThread = findViewById<TextView>(R.id.editTextMultiThreadCount)
-            val cnt = tvMultiThread.text.toString().toInt()
-            if (cnt > 1) {
-                gSub += " " + "M" + tvMultiThread.text.toString()
-            }
-        } else {
-            gSub = "F" + tvFeedValue.text
-            gLength = tvFeedLength.text.toString()
-            if(tvTaperValue > 0){
-                var targetTaperFloat = tvTaperValue*tvFeedLength.text.toString().toFloat()///2 // controller use diameter mode for X axis so no need to divide by 2 here
-                if(axis == " Z"){
-                    if(internalCut){ // for internal cut inverse positive value of taper
-                        targetTaperFloat = -targetTaperFloat
-                    }
-                    var taperStr =  String.format("%.3f", targetTaperFloat).replace(",", ".") // "%.$3f".format(targetTaperFloat.toString())
-                    gTaper = " X${taperStr}"
-                    putLog("taper:$taperStr")
-                } else {
-                    TODO("taper on X axis?")
-                }
-            }
-        }
-        val out = "$gCmd$axis$minus$gLength$gTaper $gSub"
+        val out = mfUpdIf.buildCmd(this)
+//        if (threadMode) {
+//            gCmd = "G33"
+//            gSub = "K" + tvScrewPitch.text
+//            tvLen = findViewById(R.id.editTextThreadLength)
+//            gLength = tvLen.text.toString()
+//            val tvMultiThread = findViewById<TextView>(R.id.editTextMultiThreadCount)
+//            val cnt = tvMultiThread.text.toString().toInt()
+//            if (cnt > 1) {
+//                gSub += " " + "M" + tvMultiThread.text.toString()
+//            }
+//
+//        } else {
+//            gSub = "F" + tvFeedValue.text
+//            gLength = tvFeedLength.text.toString()
+//            if(tvTaperValue > 0){
+//                var targetTaperFloat = tvTaperValue*tvFeedLength.text.toString().toFloat()///2 // controller use diameter mode for X axis so no need to divide by 2 here
+//                if(axis == " Z"){
+//                    if(internalCut){ // for internal cut inverse positive value of taper
+//                        targetTaperFloat = -targetTaperFloat
+//                    }
+//                    var taperStr =  String.format("%.3f", targetTaperFloat).replace(",", ".") // "%.$3f".format(targetTaperFloat.toString())
+//                    gTaper = " X${taperStr}"
+//                    putLog("taper:$taperStr")
+//                } else {
+//                    TODO("taper on X axis?")
+//                }
+//            }
+//        }
+        //        val out = "$gCmd$axis$minus$gLength$gTaper $gSub"
         putLog("cmd:$out")
         return out
     }
@@ -1066,20 +1247,20 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         sendCommand("!S")
     }
 
-    private fun changeFeedUnit() {
-        if (feedUnitG95) {
-            feedUnitG95 = false
-            (findViewById<View>(R.id.tvFeedUnit) as TextView).setText(R.string.feed_unit_metric_G94)
-            putLog("set mm\\min: G94")
-            sendCommand("G94")
-        } else {
-            feedUnitG95 = true
-            (findViewById<View>(R.id.tvFeedUnit) as TextView).setText(R.string.feed_unit_metric_G95)
-            //            tvFeedValue.setText("0.1");
-            putLog("set mm\\rev: G95")
-            sendCommand("G95")
-        }
-    }
+//    private fun changeFeedUnit() {
+//        if (feedUnitG95) {
+//            feedUnitG95 = false
+//            (findViewById<View>(R.id.tvFeedUnit) as TextView).setText(R.string.feed_unit_metric_G94)
+//            putLog("set mm\\min: G94")
+//            sendCommand("G94")
+//        } else {
+//            feedUnitG95 = true
+//            (findViewById<View>(R.id.tvFeedUnit) as TextView).setText(R.string.feed_unit_metric_G95)
+//            //            tvFeedValue.setText("0.1");
+//            putLog("set mm\\rev: G95")
+//            sendCommand("G95")
+//        }
+//    }
 
     private var feedMmG95 =
         arrayOf("0.01", "0.02", "0.04", "0.06", "0.08", "0.10", "0.15", "0.20", "0.25", "0.30")
@@ -1090,7 +1271,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Ro
         return if (feedUnitG95) feedMmG95[progress] else feedMmG94[progress]
     }
 
-    private fun sendCommand(cmd: String?): Boolean {
+    fun sendCommand(cmd: String?): Boolean {
         putLog("send: $cmd")
         bt.send("$cmd\n", false)
         return true

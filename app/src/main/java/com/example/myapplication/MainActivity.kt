@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -30,12 +31,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothSPP.AutoConnectionListener
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -56,11 +59,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     //    private var jogLP: Boolean = false
     private var heartbitMessageCnt: Int = 0
-    private var controllerConnectionState: Int = 0 // 0 - bt not connected, 1 - bt connected, 2 - bt connected and get valid data from efeed
+    private var controllerConnectionState: Int =
+        0 // 0 - bt not connected, 1 - bt connected, 2 - bt connected and get valid data from efeed
     private var alreadyGreenState: Boolean = false
     private var btConnectingBlink: Boolean = false
 
-    private lateinit var mfUpdIf: UpdateableFragment
+    lateinit var mfUpdIf: UpdateableFragment
     private var activeTabNum: Int = 0
     private var selectedTabNum: Int = 0
     private lateinit var pager: ViewPager // creating object of ViewPager
@@ -71,8 +75,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     private var outerCutSourceDiameterMod: Boolean = false
     private var outerCutTargetDiameterMod: Boolean = false
-//    private var pauseProgramFlag: Boolean = false
-var internalCut: Boolean = false
+
+    //    private var pauseProgramFlag: Boolean = false
+    var internalCut: Boolean = false
     private var vaitDocFeedEnd: Boolean = false
 
     private var cmdRecorded = false
@@ -83,7 +88,8 @@ var internalCut: Boolean = false
     val JOG_Z = 1
 
     enum class Direction { Left, Right, Forward, Backward }
-//    var feedDirectionV: Direction = Direction.Left
+
+    //    var feedDirectionV: Direction = Direction.Left
 //    var outD: Float = 0f
     var pauseProgramFlag: Boolean = false
     var jogLP: Boolean = false
@@ -124,14 +130,10 @@ var internalCut: Boolean = false
     private var fbChamferDbg = 0
 
 
-//    private var threadMode = false
-    private var loopMode = false
-    private var ping = false
+    //    private var threadMode = false
     private var mMetricUnit = true
     private val mutex: Semaphore = Semaphore(1)
 //    private var mChatService: BluetoothChatService? = null
-
-
 
 
     private lateinit var countdownTimer: CountDownTimer
@@ -148,7 +150,7 @@ var internalCut: Boolean = false
 
     private lateinit var btStop: MaterialButton
 
-//    private lateinit var tvRead: TextView
+    //    private lateinit var tvRead: TextView
     private lateinit var tvZLabel: TextView
     private lateinit var tvXLabel: TextView
 
@@ -157,9 +159,11 @@ var internalCut: Boolean = false
 
     private lateinit var btStateView: ImageView
 
+    private lateinit var tvLogMini: TextView
 
-//    private lateinit var tvScrewPitch: TextView
-    private lateinit var tvFeedValue: TextView
+
+    //    private lateinit var tvScrewPitch: TextView
+    lateinit var tvFeedValue: TextView
 //    private lateinit var tvFeedLength: TextView
 
 
@@ -167,8 +171,7 @@ var internalCut: Boolean = false
 
 
     fun putLog(value: String) {
-
-        val fragment: confFragment = adapter.getItem(4)  as confFragment
+        val fragment: confFragment = adapter.getItem(4) as confFragment
 
         fragment.putLog(value)
         return
@@ -199,11 +202,10 @@ var internalCut: Boolean = false
             bt.stopAutoConnect()
             // The screen has been locked
             // do stuff...
-        } else{
+        } else {
             bt.autoConnect("EFEED")
         }
     }
-
 
 
     // Register the permissions callback, which handles the user's response to the
@@ -225,11 +227,21 @@ var internalCut: Boolean = false
 
     var tcnt = 0
 
+    lateinit var b: ActivityMainBinding
     @OptIn(ExperimentalStdlibApi::class)
     @SuppressLint("ClickableViewAccessibility", "WrongViewCast", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        try {
+            b = ActivityMainBinding.inflate(layoutInflater)
+        } catch (ex: Exception) {
+            println(ex.message)
+        }
+
+        val view = b.root
+//        setContentView(R.layout.activity_main)
+        setContentView(view)
+
         supportActionBar!!.hide()
         ma = this
         /*
@@ -253,10 +265,10 @@ var internalCut: Boolean = false
         tab = findViewById(R.id.tabLayout)
 //        bar = findViewById(R.id.toolbar)
         adapter = ViewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(odFragment(), "OD turn")
-        adapter.addFragment(idFragment(), "ID turn")
+        adapter.addFragment(odFragment(0), "OD turn")
+        adapter.addFragment(odFragment(1), "ID turn")
         adapter.addFragment(threadFragment(), "thread")
-        adapter.addFragment(idFragment(), "Face")
+        adapter.addFragment(odFragment(2), "Face")
         adapter.addFragment(confFragment(), "...")
         pager.adapter = adapter
 
@@ -266,10 +278,9 @@ var internalCut: Boolean = false
 
         for (i in 0 until tabs.childCount) {
             val currentTab1 = tabs.getChildAt(i)
-            if(i == 0) {
+            if (i == 0) {
                 currentTab1.setBackgroundColor(Color.rgb(0x6A, 0x6A, 0x6A))
-            }
-                else
+            } else
                 currentTab1.setBackgroundColor(Color.WHITE)
             tabs.getChildAt(i).setOnLongClickListener {
                 for (i2 in 0 until tabs.childCount) {
@@ -280,19 +291,19 @@ var internalCut: Boolean = false
 
                         try {
                             fab.text = mfUpdIf.fabText()
-                            mfUpdIf.update(ma)
+                            mfUpdIf.update()
                         } catch (exception: Exception) {
                             exception.message?.let { putLog(it) }
                         }
 
 
-                    }
-                    else
+                    } else
                         currentTab.setBackgroundColor(Color.WHITE)
                 }
                 true
             }
         }
+
 
 //        countdownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds, 1-second intervals
 //            override fun onTick(millisUntilFinished: Long) {
@@ -329,21 +340,23 @@ var internalCut: Boolean = false
             ) == PackageManager.PERMISSION_GRANTED -> {
             }
 
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this, Manifest.permission.BLUETOOTH_CONNECT
-            ) -> {
-            }
+//            ActivityCompat.shouldShowRequestPermissionRationale(
+//                this, Manifest.permission.BLUETOOTH_CONNECT
+//            ) -> {
+//            }
 
             else -> {
                 // You can directly ask for the permission.
-                requestPermissions(
-                    arrayOf(Manifest.permission.BLUETOOTH_CONNECT, BLUETOOTH_SCAN),
-                    PERMISSION_GRANTED
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, BLUETOOTH_SCAN),
+                        PERMISSION_GRANTED
+                    )
+                }
             }
         }
 
-        btStateView =findViewById(R.id.btStateView)
+        btStateView = findViewById(R.id.btStateView)
 
 //        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
@@ -406,9 +419,6 @@ var internalCut: Boolean = false
 //        mChatService = BluetoothChatService(this, mHandler)
 
 
-
-
-
 // todo jog
 //        findViewById<ConstraintLayout>(R.id.constraintLayoutJog).isVisible = false
 //        val jogX = findViewById<RotaryKnob>(R.id.knob)
@@ -433,9 +443,6 @@ var internalCut: Boolean = false
 //        }
 
 
-
-
-
         threadMode = false //(findViewById<View>(R.id.radioButton2) as RadioButton).isChecked
 
 //        tvRead = findViewById(R.id.tvReadLog)
@@ -449,10 +456,24 @@ var internalCut: Boolean = false
         fab = findViewById(R.id.btMain)
         btStop = findViewById(R.id.button)
 
+        tvLogMini = findViewById(R.id.tvLogMini)
         tvZLabel = findViewById(R.id.tvZLabel)
         tvXLabel = findViewById(R.id.tvXLabel)
         tvXLabelGlobal = findViewById<TextView>(R.id.tvXLabelGlobal)
         tvZLabelGlobal = findViewById<TextView>(R.id.tvZLabelGlobal)
+        try {
+            val font = ResourcesCompat.getFont(this, R.font.f2)
+            //val tf = Typeface.createFromAsset(assets, "font/f2.ttf");
+
+            findViewById<TextView>(R.id.textViewXr).typeface = font
+            findViewById<TextView>(R.id.textViewZ).typeface = font
+            tvZLabel.typeface = font
+            tvXLabel.typeface = font
+            tvXLabelGlobal.typeface = font
+            tvZLabelGlobal.typeface = font
+        } catch (ex: Exception) {
+            println(ex.message)
+        }
 
 
 //        tvScrewPitch = findViewById(R.id.tvScrewPitch)
@@ -492,7 +513,6 @@ var internalCut: Boolean = false
 //
 //        viewsMap.forEach { it.value.isVisible = false }
 //        viewsMap[currentView]!!.isVisible = true
-
 
 
         btnChamfer.setOnLongClickListener {
@@ -584,7 +604,7 @@ var internalCut: Boolean = false
                         onOuterCutSourceDiameterClick(v)
 
                         val getX =
-                            String.format("%.2f", v.text.toString().toFloat()).replace(',', '.')
+                            String.format(locale = Locale.ROOT, "%.2f", v.text.toString().toFloat())
                         tvXLabelGlobal.text = getX
 //                        findViewById<TextView>(R.id.tvOuterCutSourceDiameter).text = getX
                         // the user is done typing.
@@ -629,14 +649,14 @@ var internalCut: Boolean = false
         tvXLabel.setOnLongClickListener {
             //        mX = 0.0f
             mXlimb = 0
-            tvXLabel.text = "Xr: 0.00"
+            tvXLabel.text = "0.00"
             putLog("zero X")
             true
         }
         tvZLabel.setOnLongClickListener {
             //        mZ = 0.0f
             mZlimb = 0
-            tvZLabel.text = "Z: 0.00"
+            tvZLabel.text = "0.00"
             putLog("zero Z")
             true
         }
@@ -739,12 +759,14 @@ var internalCut: Boolean = false
                             btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
                             putLog("BT STATE_CONNECTING")
                         }
+
                         BluetoothState.STATE_LISTEN -> {
                             putLog("BT STATE_LISTEN")
                             controllerConnectionState = 0
                             btStateView.setBackgroundColor(Color.RED)
                             btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
                         }
+
                         BluetoothState.STATE_NONE -> {
                             controllerConnectionState = 0
                             btStateView.setBackgroundColor(Color.RED)
@@ -781,7 +803,7 @@ var internalCut: Boolean = false
 //                } else
                 if (message.startsWith("!!!!")) {
                     heartbitMessageCnt++
-                    if(controllerConnectionState != 2){
+                    if (controllerConnectionState != 2) {
                         alreadyGreenState = false
                         controllerConnectionState = 2
                         updateUIbyConnectionState()
@@ -805,24 +827,27 @@ var internalCut: Boolean = false
 
         val timer = Timer()
         timer.schedule(0, 1000) {
-            if(heartbitMessageCnt < 5)
-            {
-                if(controllerConnectionState == 2 ){ // poor connection link, change to yellow
-                    btStateView.setBackgroundColor(Color.YELLOW)
+            if (heartbitMessageCnt < 5) {
+                if (controllerConnectionState == 2) { // poor connection link, change to yellow
+                    runOnUiThread{ btStateView.setBackgroundColor(Color.YELLOW) }
+//                    btStateView.setBackgroundColor(Color.YELLOW)
                     alreadyGreenState = false
-                } else if(controllerConnectionState == 0){
-                    if(btConnectingBlink){
+                } else if (controllerConnectionState == 0) {
+                    if (btConnectingBlink) {
                         btConnectingBlink = false
-                        btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
+                        runOnUiThread{ btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24) }
+  //                      btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
                     } else {
                         btConnectingBlink = true
-                        btStateView.setImageResource(R.drawable.baseline_bluetooth_24)
+                        runOnUiThread{ btStateView.setImageResource(R.drawable.baseline_bluetooth_24) }
+    //                    btStateView.setImageResource(R.drawable.baseline_bluetooth_24)
                     }
                 }
             } else {
-                if(!alreadyGreenState){
+                if (!alreadyGreenState) {
                     alreadyGreenState = true
-                    btStateView.setBackgroundColor(Color.GREEN)
+                    runOnUiThread{ btStateView.setBackgroundColor(Color.GREEN) }
+                    //              btStateView.setBackgroundColor(Color.GREEN)
                 }
             }
             heartbitMessageCnt = 0
@@ -832,14 +857,15 @@ var internalCut: Boolean = false
     }
 
     private fun updateUIbyConnectionState() {
-        when(controllerConnectionState){
+        when (controllerConnectionState) {
             0 -> {
                 btStateView.setBackgroundColor(Color.RED)
                 btStateView.setImageResource(R.drawable.baseline_bluetooth_searching_24)
 //                putLog("BT STATE_CONNECTED")
 //                findViewById<ConstraintLayout>(R.id.constraintLayout).forEach {
 //                    it.isEnabled = true
-                }
+            }
+
             1 -> {
                 btStateView.setBackgroundColor(Color.YELLOW)
                 btStateView.setImageResource(R.drawable.baseline_bluetooth_connected_24)
@@ -848,6 +874,7 @@ var internalCut: Boolean = false
                     it.isEnabled = true
                 }
             }
+
             2 -> {
                 btStateView.setBackgroundColor(Color.GREEN)
                 btStateView.setImageResource(R.drawable.baseline_bluetooth_connected_24)
@@ -857,44 +884,46 @@ var internalCut: Boolean = false
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun extractXZ(data: ByteArray){
+    private fun extractXZ(data: ByteArray) {
         val z: Short = String(data, 4, 4, Charsets.UTF_8).hexToShort()
         val x: Short = String(data, 8, 4, Charsets.UTF_8).hexToShort()
-        if(z!= controllerZ || x!=  controllerX)
+        if (z != controllerZ || x != controllerX)
             putLog("x: ${x.toString()} z: ${z.toString()}")
-        if(z != controllerZ){
+        if (z != controllerZ) {
             val delta = controllerZ - z
-            if(mZlimbInitial)
+            if (mZlimbInitial)
                 mZlimbInitial = false
             else
-                mZlimb +=delta
+                mZlimb += delta
             controllerZ = z
 //            mZ = z/160.0f
 //            val getZ = String.format("%.2f", mZ).replace(',','.') //diameter mode, dive by 50
-            tvZLabel.text = "Z: "+ String.format("%.2f", mZlimb /160.0f)
-            tvZLabelGlobal.text = String.format("%.2f", controllerZ /160.0f)
+            tvZLabel.text = String.format(locale = Locale.ROOT,"%.2f", mZlimb / 160.0f)
+            tvZLabelGlobal.text = String.format(locale = Locale.ROOT,"%.2f", controllerZ / 160.0f)
         }
 
-        if(x != controllerX){
+        if (x != controllerX) {
             val delta = controllerX - x
-            if(mXlimbInitial)
+            if (mXlimbInitial)
                 mXlimbInitial = false
             else
-                mXlimb +=delta
+                mXlimb += delta
             controllerX = x
 //            mX = x/50.0f
 //            val getX = String.format("%.2f", mX).replace(',','.') //diameter mode, dive by 50
-            tvXLabel.text = "Xr: "+ String.format("%.2f", mXlimb /100.0f)
-            tvXLabelGlobal.text = String.format(locale = Locale.ROOT, "%.2f", controllerX /50.0f) //.replace(',','.')
+            tvXLabel.text = String.format(locale = Locale.ROOT,"%.2f", mXlimb / 100.0f)
+            tvXLabelGlobal.text =
+                String.format(locale = Locale.ROOT, "%.2f", controllerX / 50.0f) //.replace(',','.')
 //            findViewById<TextView>(R.id.tvOuterCutSourceDiameter).text = getX
         }
     }
+
     private fun processMessage(dataBA: ByteArray, message: String) {
         putLog("response: message $message")
         //      Integer.decode( message.substring(4,11))
         try {
-            val data = message.substring(4,12)
-            when(message[3]){
+            val data = message.substring(4, 12)
+            when (message[3]) {
                 'R' -> {
                     putLog("reset event, fw build: ${Integer.parseUnsignedInt(data, 16)}")
                     cmdRecorded = false
@@ -917,25 +946,27 @@ var internalCut: Boolean = false
 //                    findViewById<TextView>(R.id.tvOuterCutSourceDiameter).text = getX
 //                    putLog("global X ${tvXLabelGlobal.text}")
 //                }
-                'S' -> putLog("on stop: ${Integer.parseUnsignedInt(data,16)/160.0f}")// stop
+                'S' -> putLog("on stop: ${Integer.parseUnsignedInt(data, 16) / 160.0f}")// stop
                 'E' -> {
                     cmdStarted = false
                     extractXZ(dataBA)
                     processProgram()
-                    if(fbChamfer)
+                    if (fbChamfer)
                         easyChamfer()
-                    if(threadMode)
+                    if (threadMode)
                         fab.setText(R.string.thread)
                     else
                         fab.setText(R.string.feed)
                 }
+
                 'f' -> {
-                    val feed = Integer.parseUnsignedInt(data,16)
+                    val feed = Integer.parseUnsignedInt(data, 16)
                     putLog("feed 1616: ${feed.toString()}")
                     val feedF = 1474560.0f / feed
                     putLog("feed: ${feedF.toString()}")
-                    tvFeedValue.text = String.format("%.1f", feedF).replace(',','.')
+                    tvFeedValue.text = String.format(locale = Locale.ROOT,"%.1f", feedF)
                 }
+
                 'F' -> {
                     val i = java.lang.Long.parseLong(data, 16);
                     val f = java.lang.Float.intBitsToFloat(i.toInt());
@@ -1005,44 +1036,43 @@ var internalCut: Boolean = false
 //    }
 
 
-    private fun easyChamfer(){
+    private fun easyChamfer() {
         var iCh = 4
-        when(fbChamferDbg) {
-            0->sendCommand("G01 Z$iCh X-${iCh*2} F${tvFeedValue.text}")
-            1->sendCommand("G00 X${iCh*2}")
-            2->{
-                if(fbChamferUp) { //check if we want to stop chamfer mode
+        when (fbChamferDbg) {
+            0 -> sendCommand("G01 Z$iCh X-${iCh * 2} F${tvFeedValue.text}")
+            1 -> sendCommand("G00 X${iCh * 2}")
+            2 -> {
+                if (fbChamferUp) { //check if we want to stop chamfer mode
                     fbChamfer = false
                     fbChamferUp = false
                     sendCommand("G00 Z-$iCh")
-                } else{
+                } else {
                     sendCommand("G00 Z-$iCh.4")
                 }
             }
         }
-        if(++fbChamferDbg >2)
-            fbChamferDbg=0
+        if (++fbChamferDbg > 2)
+            fbChamferDbg = 0
     }
 
-    private fun processProgram(){
-        if(currentView == 2 || currentView == 5){
+    private fun processProgram() {
+        if (currentView == 2 || currentView == 5) {
 //            if(outerCutSourceDiameterMod && outerCutTargetDiameterMod && !pauseProgramFlag && cmdRecorded) {
-            if(!pauseProgramFlag && cmdRecorded) {
-                if(vaitDocFeedEnd == true){
+            if (!pauseProgramFlag && cmdRecorded) {
+                if (vaitDocFeedEnd == true) {
                     putLog("DOC complete, repeat main cut")
                     sendCommand("!3")
                     vaitDocFeedEnd = false
                 } else {
                     putLog("move DOC:")
-                    if(currentView == 2){
-                            sendCommand("G00 X -${findViewById<TextView>(R.id.tvDOC).text}")
-                        }
-                    else
-                        sendCommand("G00 X ${findViewById<TextView>(R.id.tvDOC).text}")
+                    if (currentView == 2) {
+                        sendCommand("G00 X -${findViewById<TextView>(R.id.etDOC).text}")
+                    } else
+                        sendCommand("G00 X ${findViewById<TextView>(R.id.etDOC).text}")
                     vaitDocFeedEnd = true
                 }
-            } else{
-                if(cmdRecorded)
+            } else {
+                if (cmdRecorded)
                     putLog("program on pause")
 //                else
 //                    putLog("no active records to play")
@@ -1150,7 +1180,7 @@ var internalCut: Boolean = false
 //        }
 //    }
 
-    private fun buildCmd(): String {
+    fun buildCmd(): String {
 //        val minus =
 //            if (feedDirection == Direction.Right || feedDirection == Direction.Backward) "" else "-"
 //        var gCmd = "G01"
@@ -1162,7 +1192,7 @@ var internalCut: Boolean = false
 //
 //        val tvTaperValue = findViewById<TextView>(R.id.tvTaperValue).text.toString().toFloat()
 
-        val out = mfUpdIf.buildCmd(this)
+        val out = mfUpdIf.buildCmd()
 //        if (threadMode) {
 //            gCmd = "G33"
 //            gSub = "K" + tvScrewPitch.text
@@ -1201,10 +1231,10 @@ var internalCut: Boolean = false
     }
 
     fun onOuterCutSourceDiameterClick(v: View) {
-
+// calibrate X axis by measure real position of lathe tool(diameter of part) and send it to lathe controller
 //        outerCutSourceDiameterMod = true
         var fDia = (v as EditText).text.toString().toFloat()
-        var iRadius = (fDia*50f).toInt()
+        var iRadius = (fDia * 50f).toInt()
         controllerX = iRadius.toShort()
         mXlimb = 0
         putLog("radius: ${String.format("%08X", iRadius)}")
@@ -1217,13 +1247,13 @@ var internalCut: Boolean = false
         (v as EditText).selectAll()
     }
 
-    fun onPauseClick(v:View){
+    fun onPauseClick(v: View) {
 
 //        pauseProgramFlag = !pauseProgramFlag
         pauseProgramFlag = !pauseProgramFlag
-        if(pauseProgramFlag){
+        if (pauseProgramFlag) {
             findViewById<Button>(R.id.btPause).setBackgroundColor(Color.RED)
-        } else{
+        } else {
             findViewById<Button>(R.id.btPause).setBackgroundColor(Color.GREEN)
             processProgram()
         }
@@ -1271,7 +1301,10 @@ var internalCut: Boolean = false
         return if (feedUnitG95) feedMmG95[progress] else feedMmG94[progress]
     }
 
+    var miniLogStr = ""
     fun sendCommand(cmd: String?): Boolean {
+        miniLogStr = "$cmd<-$miniLogStr".take(30)
+        tvLogMini.text = miniLogStr
         putLog("send: $cmd")
         bt.send("$cmd\n", false)
         return true
@@ -1294,11 +1327,10 @@ var internalCut: Boolean = false
         currentView = p2
         viewsMap.forEach { it.value.isVisible = false }
         viewsMap[currentView]!!.isVisible = true
-        if(currentView in 0..2) {
+        if (currentView in 0..2) {
             internalCut = false
             sendCommand("!O")
-        }
-        else {
+        } else {
             internalCut = true
             sendCommand("!I")
         }
@@ -1307,7 +1339,6 @@ var internalCut: Boolean = false
     override fun onNothingSelected(p0: AdapterView<*>?) {
         TODO("Not yet implemented")
     }
-
 
 
 }

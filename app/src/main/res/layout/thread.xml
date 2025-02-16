@@ -38,8 +38,8 @@
         android:layout_marginTop="104dp"
         android:elevation="3dp"
         android:text="Taper:"
-        app:layout_constraintBottom_toTopOf="@+id/tvTaperValue3"
-        app:layout_constraintStart_toStartOf="@+id/tvTaperValue3"
+        app:layout_constraintBottom_toTopOf="@+id/etTaperValue"
+        app:layout_constraintStart_toStartOf="@+id/etTaperValue"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

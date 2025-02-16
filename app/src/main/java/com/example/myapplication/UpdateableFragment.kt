@@ -1,7 +1,7 @@
 package com.example.myapplication
 
 interface UpdateableFragment {
-    fun update(a: MainActivity)
+    fun update()
     fun fabText():String
-    fun buildCmd(a: MainActivity):String
+    fun buildCmd():String
 }

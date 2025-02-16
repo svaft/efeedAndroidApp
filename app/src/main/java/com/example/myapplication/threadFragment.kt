@@ -13,18 +13,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.MainActivity.Direction
+import java.util.Locale
 
 
 class threadFragment : Fragment(), UpdateableFragment  {
     val types = arrayOf("simple User", "Admin")
     //inflate the layout
+    lateinit var v: View
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val t=inflater.inflate(R.layout.thread, container, false)
-        val spinner = t.findViewById<Spinner>(R.id.spinner3)
+        v=inflater.inflate(R.layout.thread, container, false)
+        a = activity as MainActivity
+        val spinner = v.findViewById<Spinner>(R.id.spinner3)
         spinner?.adapter = activity?.let {
                         ArrayAdapter.createFromResource(
                             it.applicationContext, R.array.threads_array,
@@ -44,75 +48,53 @@ class threadFragment : Fragment(), UpdateableFragment  {
 
         }
         spinner.setSelection(4)
-        return t
+        return v
     }
 
-    lateinit var v: View
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        v = view
-//        val spinner: Spinner = view.findViewById(R.id.spinner3)
-//
-//        if (spinner != null) {
-//            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
-//            spinner.adapter = adapter
-//
-//
-//        // Настраиваем адаптер
-//        val adapter: ArrayAdapter<*> =
-//            ArrayAdapter.createFromResource(
-//                this, R.array.threads_array,
-//                android.R.layout.simple_spinner_item
-//            )
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//
-//
-//// Вызываем адаптер
-//        spinner.adapter = adapter
-// Create an ArrayAdapter using the string array and a default spinner layout.
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.planets_array,
-//            android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//            // Specify the layout to use when the list of choices appears.
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            // Apply the adapter to the spinner.
-//            spinner.adapter = adapter
-//        }
     }
-
-    override fun update(a: MainActivity) {
+    private lateinit var a: MainActivity
+    override fun update() {
         a.threadMode = true
         a.fab.text = "Резьба"
     }
 
-    override fun buildCmd(a: MainActivity): String {
+    override fun buildCmd(): String {
         val minus =
             if (a.feedDirection == Direction.Right || a.feedDirection == Direction.Backward) "" else "-"
-        var gCmd = "G01"
-        val gLength: String
-        val gTaper = ""
+        val gCmd = "G33"
+        var gTaper = ""
         val axis = if (a.feedDirection == Direction.Right || a.feedDirection == Direction.Left) " Z" else " X"
 
+        val gLength = v.findViewById<TextView>(R.id.editTextThreadLength).text.toString()
         val tvTaperValue =  v.findViewById<TextView>(R.id.tvTaperValue).text.toString().toFloat()
 
-        v.findViewById<TextView>(R.id.tvScrewPitch).text.toString().toFloat()
+        if(tvTaperValue > 0){
+            var targetTaperFloat = tvTaperValue*gLength.toFloat()///2 // controller use diameter mode for X axis so no need to divide by 2 here
+            if(axis == " Z"){
+                if(a.internalCut){ // for internal cut inverse positive value of taper
+                    targetTaperFloat = -targetTaperFloat
+                }
+                val taperStr =  String.format(locale = Locale.ROOT,"%.3f", targetTaperFloat)
+                gTaper = " X${taperStr}"
+                a.putLog("taper:$taperStr")
+            } else {
+                TODO("taper on X axis?")
+            }
+        }
 
-        gCmd = "G33"
-        var gSub: String = "K" + v.findViewById<TextView>(R.id.tvScrewPitch).text
-        val tvLen: TextView = v.findViewById(R.id.editTextThreadLength)
-        gLength = tvLen.text.toString()
-        val tvMultiThread = v.findViewById<TextView>(R.id.editTextMultiThreadCount)
-        val cnt = tvMultiThread.text.toString().toInt()
-        if (cnt > 1) {
-            gSub += " " + "M" + tvMultiThread.text.toString()
+        var gSub = "K" + v.findViewById<TextView>(R.id.tvScrewPitch).text
+        val tvMultiThread = v.findViewById<TextView>(R.id.editTextMultiThreadCount).text.toString()
+        if (tvMultiThread.toInt() > 1) {
+            gSub += " M$tvMultiThread"
         }
         val out = "$gCmd$axis$minus$gLength$gTaper $gSub"
         return out
     }
 
     override fun fabText(): String {
-        return "Резьба"
+        return "Thread"
     }
 }

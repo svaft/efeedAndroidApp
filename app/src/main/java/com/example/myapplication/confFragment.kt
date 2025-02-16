@@ -11,59 +11,49 @@ import org.apache.commons.collections4.queue.CircularFifoQueue
 
 class confFragment : Fragment(), UpdateableFragment {
     lateinit var tvLog: TextView
+    private lateinit var v: View
+
+    private var log = CircularFifoQueue<String>(20)
 
     //inflate the layout
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) =
-        inflater.inflate(R.layout.conf, container, false)!!
-    lateinit var v: View
+    ): View {
+        v = inflater.inflate(R.layout.conf, container, false)!!
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        v = view
         tvLog = v.findViewById(R.id.tvReadLog)
         tvLog.movementMethod = ScrollingMovementMethod()
         tvLog.text = log.toString()
+
+        return v
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
-    private var log = CircularFifoQueue<String>(20)
 
     public fun putLog(value: String) {
         log.add("\r\n $value")
         if (!this::tvLog.isInitialized)
         return
         tvLog.text = log.toString()
-    //        if (mutex.tryAcquire()) {
-//            try {
-//                runOnUiThread {
-//                    tvRead.text = log.toString()
-////                    tvZLabel.text = "Z: %.${2}f".format(mZ)
-////                    tvXLabel.text = "X: %.${2}f".format(mX)
-//
-//                    mutex.release()
-//                }
-//            } catch (ex: Exception) {
-//                Log.i("---", "Exception in thread")
-//            }
-//        }
     }
 
-    override fun update(a: MainActivity) {
+    override fun update() {
     }
 
     override fun fabText(): String {
         return "config"
     }
 
-    override fun buildCmd(a: MainActivity): String {
+    override fun buildCmd(): String {
         return ""
     }
     override fun onSaveInstanceState(outState: Bundle) {

@@ -195,15 +195,18 @@ class RotaryKnob @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        Log.d("KNOB","onTouch action:${event.action}")
         return if (gestureDetector.onTouchEvent(event))
             true
         else
             super.onTouchEvent(event)
     }
     override fun onDown(event: MotionEvent): Boolean {
+        Log.d("KNOB","onDown")
         return true
     }
     override fun onSingleTapUp(e: MotionEvent): Boolean {
+        Log.d("KNOB","onSingleTapUp")
         return false
     }
 

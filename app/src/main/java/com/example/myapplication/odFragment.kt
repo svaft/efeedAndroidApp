@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -13,16 +14,20 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.fragment.app.Fragment
-import com.example.myapplication.MainActivity.Direction
+import androidx.fragment.app.activityViewModels
+import com.example.myapplication.databinding.OdTurnBinding
+import com.google.android.material.button.MaterialButton
 import java.util.Locale
+
+
+
+
+
+enum class fsm { Reset, Initial, StartedNotRecorded, RecordedPaused, RecordedPlayed }
 
 class odFragment(i: Int) : Fragment(), UpdateableFragment {
     private var mOd = i
-
-    private var cmdRecorded = false
     private var str = "false"
-
-    private var feedUnitG95 = true
 
     private lateinit var tvFeedUnit: TextView
     private lateinit var etFeedLength: EditText
@@ -31,55 +36,79 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
     private lateinit var swLoop: Switch
     private lateinit var etOuterCutTargetDiameter: EditText
 
-    lateinit var v: View
+    var mFeed94: String = "600.00"
+    var mFeed95: String = "0.1"
 
-//    private var _binding2: IdTurnBinding? = null
-//    private val bi get() = _binding2!!
-//
-//    private var _binding: OdTurnBinding? = null
-//    private val b get() = _binding!!
+    private var outerCutTargetDiameterMod: Boolean = false
 
-//    private var _a: MainActivity? = null
-    private lateinit var a: MainActivity// get() = _a!!
-    //inflate the layout
+    private val viewModel: MyViewModel by activityViewModels()
+    private var _binding: OdTurnBinding? = null
+    private val b get() = _binding!!
 
+    private lateinit var a: MainActivity
+    private lateinit var v: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val myView: View = inflater.inflate(R.layout.od_turn, container, false)!!
+        _binding = OdTurnBinding.inflate(inflater, container, false)
+        v = b.root
+//        val myView: View = inflater.inflate(R.layout.od_turn, container, false)!!
+
         if(mOd == 0){
-            myView.findViewById<ImageView>(R.id.imageInnerProgram).setImageResource(R.drawable.left_outer_full_ex3d)
+            v.findViewById<ImageView>(R.id.imageInnerProgram).setImageResource(R.drawable.left_outer_full_ex3d)
+//            viewModel.internalCut.value = 0
         } else {
-            myView.findViewById<ImageView>(R.id.imageInnerProgram).setImageResource(R.drawable.left_inner_full_ex3d)
+            v.findViewById<ImageView>(R.id.imageInnerProgram).setImageResource(R.drawable.left_inner_full_ex3d)
+//            viewModel.internalCut.value = 1
         }
 
         a = activity as MainActivity
-        v = myView
 
+        viewModel.mDOC.value = b.etDOC.text.toString()
         tvFeedUnit = v.findViewById(R.id.tvFeedUnit)
         etFeedLength = v.findViewById(R.id.etFeedLength)
         etFeedValue = v.findViewById(R.id.etFeedValue)
         etTaperValue = v.findViewById(R.id.etTaperValue)
         swLoop = v.findViewById(R.id.swLoop)
         etOuterCutTargetDiameter = v.findViewById(R.id.etOuterCutTargetDiameter)
+        etOuterCutTargetDiameter.setOnClickListener{
 
-        a.b.tvFeedValue.text = etFeedValue.text
+        }
+
+        if (viewModel.mG94G95.value == 1) {
+            tvFeedUnit.setText(R.string.feed_unit_metric_G95)
+            etFeedValue.setText(mFeed95)
+        } else {
+            tvFeedUnit.setText(R.string.feed_unit_metric_G94)
+            etFeedValue.setText(mFeed94)
+        }
+
+//        a.b.tvFeedValue.text = etFeedValue.text
+
+        val numbers = listOf(R.id.tvF01, R.id.tvF02, R.id.tvF03, R.id.tvF04, R.id.tvF05, R.id.tvF06, R.id.tvF07, R.id.tvF08, R.id.tvF09, R.id.tvF10, R.id.tvF11, R.id.tvF12)
+        for (item in numbers)  v.findViewById<TextView>(item).setOnClickListener{ feedHelper(it) }
 
         swLoop.setOnClickListener {
             onLoopClicked(it)
         }
 
         tvFeedUnit.setOnLongClickListener {
-            changeFeedUnit()
+            if (viewModel.mG94G95.value == 1) {
+//                tvFeedUnit.setText(R.string.feed_unit_metric_G94)
+                a.putLog("try to set mm\\min: G94")
+                a.sendCommand("G94")
+ //               viewModel.mG94G95.value = 1
+            } else {
+                tvFeedUnit.setText(R.string.feed_unit_metric_G95)
+                a.putLog("try to set mm\\rev: G95")
+                a.sendCommand("G95")
+//                viewModel.mG94G95.value = 0
+            }
+//            changeFeedUnit()
             true
-        }
-        if (feedUnitG95) {
-            tvFeedUnit.setText(R.string.feed_unit_metric_G95)
-        } else {
-            tvFeedUnit.setText(R.string.feed_unit_metric_G94)
         }
 
         etFeedValue.setOnEditorActionListener (
@@ -87,14 +116,11 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE || event != null && event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER) {
                     if (event == null || !event.isShiftPressed) {
                         val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//                        outerCutTargetDiameterMod = true
-//                        onOuterCutSourceDiameterClick(v)
-
-                        val getX =
-                            String.format(locale = Locale.ROOT,"%.2f", v.text.toString().toFloat())
-                        etFeedValue.setText(getX)
-                        if(a.mfUpdIf == this) //check fragment is active(longpress) and update feed value on main activity
-                            a.tvFeedValue.text = getX
+                        val getX = String.format(locale = Locale.ROOT,"%.2f", v.text.toString().toFloat())
+                        v.text = getX
+                        if(a.mfUpdIf == this) { //check fragment is active(longpress) and update feed value on main activity
+                            viewModel.currentFeed.value = getX
+                        }
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
                         return@OnEditorActionListener true // consume.
                     }
@@ -102,42 +128,165 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
                 false // pass on to other listeners.
             }
         )
-        return myView
-    }
 
-
-    private fun changeFeedUnit() {
-        if (feedUnitG95) {
-            feedUnitG95 = false
-            tvFeedUnit.setText(R.string.feed_unit_metric_G94)
-            a.putLog("set mm\\min: G94")
-            a.sendCommand("G94")
-        } else {
-            feedUnitG95 = true
-            tvFeedUnit.setText(R.string.feed_unit_metric_G95)
-            //            tvFeedValue.setText("0.1");
-            a.putLog("set mm\\rev: G95")
-            a.sendCommand("G95")
+        viewModel.mG94G95.observe(viewLifecycleOwner) { value ->
+            if(value == 0){
+//                mFeed95 =etFeedValue.text.toString()
+                etFeedValue.setText(mFeed94)
+                tvFeedUnit.setText(R.string.feed_unit_metric_G94)
+//                b.tvFeedUnit.text = "OD:"
+            } else{
+//                mFeed94 =etFeedValue.text.toString()
+                etFeedValue.setText(mFeed95)
+                tvFeedUnit.setText(R.string.feed_unit_metric_G95)
+//                b.tvFeedUnit.text = "ID:"
+            }
         }
+
+
+        return v
     }
+
+    private fun feedHelper(it: View?) {
+        etFeedValue.setText((it as TextView).text)
+    }
+
 
 
     override fun update() {
-//        a.feedDirection = Direction.Right
-//        a.fab.setIconResource(R.drawable.ic_baseline_arrow_forward_24)
+        a.b.btMain.isEnabled = true
+        a.b.btMain.setText(R.string.feed)
+        viewModel.threadMode.value = false
+
+        if(mOd == 0 ) {
+            if(viewModel.internalCut.value !=0)
+                a.sendCommand("!O")
+        } else {
+            if(viewModel.internalCut.value !=1)
+            a.sendCommand("!I")
+        }
     }
+
+    private var fsmState: fsm = fsm.Initial
+
+    override fun programMainLP() {
+
+        a.putLog("reset record")
+        fsmState = fsm.Initial
+        updateUIbyFsmState(a)
+        a.sendCommand("!S")
+    }
+
+    fun updateUIbyFsmState(ma: MainActivity){
+        when(fsmState) {
+            fsm.Reset -> {
+                ma.b.viewPager.setPagingEnabled(true)
+                ma.enableTabs()
+                ma.b.btMain.setBackgroundColor(Color.GREEN)
+                ma.b.btPause.setBackgroundColor(Color.GREEN)
+                ma.b.btMain.setText(R.string.feed)
+                a.updateMainIcon()
+            }
+            fsm.Initial ->{
+                ma.b.viewPager.setPagingEnabled(true)
+                ma.enableTabs()
+                ma.b.btMain.setBackgroundColor(Color.GREEN)
+                ma.b.btPause.setBackgroundColor(Color.GREEN)
+                ma.b.btMain.setText(R.string.feed)
+                a.updateMainIcon()
+            }
+            fsm.StartedNotRecorded ->{
+                ma.b.viewPager.setPagingEnabled(false)
+                ma.disableUnselectedTabs()
+                ma.b.btMain.setBackgroundColor(Color.YELLOW)
+                ma.b.btMain.setText(R.string.sns)
+                a.updateMainIcon()
+            }
+            fsm.RecordedPaused ->{
+                ma.b.btMain.setBackgroundColor(Color.RED)
+                ma.b.btPause.setBackgroundColor(Color.RED)
+                ma.b.btMain.setText(R.string.feed)
+            }
+            fsm.RecordedPlayed -> {
+                ma.b.btMain.setText(R.string.feed)
+            }
+        }
+    }
+
+    override fun processEvent(e: String) {
+        when(e){
+            "eom" ->{
+                a.putLog("get EOM")
+                if(fsmState == fsm.StartedNotRecorded){
+                    a.putLog("stop&save last move")
+                    a.sendCommand("!2")
+                    fsmState = fsm.RecordedPaused
+                    updateUIbyFsmState(a)
+                } else
+                    if(fsmState == fsm.RecordedPlayed){
+                        fsmState = fsm.RecordedPaused
+                        updateUIbyFsmState(a)
+                    }
+            }
+            "reset" ->{ // reset
+                a.putLog("reset record")
+                fsmState = fsm.Initial
+                updateUIbyFsmState(a)
+            }
+
+        }
+    }
+    override fun programMainClick() {
+//        super.programMainClick(ma)
+        // change state and update UI
+        when(fsmState){
+            fsm.Reset ->{
+                a.putLog("reset record")
+                a.sendCommand("!S")
+                fsmState = fsm.Initial
+            }
+            fsm.Initial ->{
+//                ma.mfUpdIf.update()
+                val cmd = buildCmd()
+                a.sendCommand(cmd)
+                a.putLog(cmd)
+                fsmState = fsm.StartedNotRecorded
+            }
+            fsm.StartedNotRecorded -> {
+                a.putLog("stop&save last move")
+                a.sendCommand("!2")
+                fsmState = fsm.RecordedPaused
+            }
+            fsm.RecordedPaused -> {
+                a.putLog("repeat or zero")
+                a.sendCommand("!3") //repeat last command or quick move to initial position
+                a.b.btMain.setText(R.string.stop)
+                fsmState =fsm.RecordedPlayed
+            }
+            fsm.RecordedPlayed -> {
+                a.putLog("stop current move")
+                a.sendCommand("!S") // stop current move
+            }
+        }
+        updateUIbyFsmState(a)
+    }
+
 
     override fun fabText(): String {
         return "Feed"
-
     }
 
     override fun buildCmd(): String {
+        if(viewModel.internalCut.value == 0){
+            a.sendCommand("!O")
+        } else {
+            a.sendCommand("!I")
+        }
         val minus =
-            if (a.feedDirection == Direction.Right || a.feedDirection == Direction.Backward) "" else "-"
+            if (viewModel.feedDirection.value == Direction.Right || viewModel.feedDirection.value == Direction.Backward) "" else "-"
         val gCmd = "G01"
         var gTaper = ""
-        val axis = if (a.feedDirection == Direction.Right || a.feedDirection == Direction.Left) " Z" else " X"
+        val axis = if (viewModel.feedDirection.value == Direction.Right || viewModel.feedDirection.value == Direction.Left) " Z" else " X"
         val tvTaperValue = etTaperValue.text.toString().toFloat()
 
         val gSub: String = "F" + etFeedValue.text
@@ -145,7 +294,7 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
         if(tvTaperValue > 0){
             var targetTaperFloat = tvTaperValue*gLength.toFloat()///2 // controller use diameter mode for X axis so no need to divide by 2 here
             if(axis == " Z"){
-                if(a.internalCut){ // for internal cut inverse positive value of taper
+                if(viewModel.internalCut.value == 1){ // for internal cut inverse positive value of taper
                     targetTaperFloat = -targetTaperFloat
                 }
                 val taperStr =  String.format(locale = Locale.ROOT,"%.3f", targetTaperFloat)
@@ -159,9 +308,13 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
         return out
     }
 
+    override fun processProgram() {
+
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean("IS_EDITING_KEY", cmdRecorded)
+//        outState.putBoolean("IS_EDITING_KEY", cmdRecorded)
         outState.putString("RANDOM_GOOD_DEED_KEY", str)
     }
 
@@ -169,18 +322,15 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
     private var loopMode = false
     private var ping = false
 
-    fun onLoopClicked(v: View) {
-        val checked = (v as Switch).isChecked
-        if (checked) {
+    private fun onLoopClicked(v: View) {
+        if ((v as Switch).isChecked) {
             loopMode = true
             ping = false
            a.putLog("loop mode on")
             pingpong()
         } else {
-            if (loopMode) {
-                loopMode = false
-                a.putLog("loop mode off")
-            }
+            loopMode = false
+            a.putLog("loop mode off")
         }
     }
 
@@ -199,4 +349,23 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
             false
         }
     }
+    fun onOuterCutTargetDiameter(v: View) {
+        outerCutTargetDiameterMod = true
+        (v as EditText).selectAll()
+    }
+
+
+//    private fun changeFeedUnit() {
+//        if (viewModel.mG94G95.value == 0) {
+//            tvFeedUnit.setText(R.string.feed_unit_metric_G94)
+//            a.putLog("set mm\\min: G94")
+//            a.sendCommand("G94")
+//            viewModel.mG94G95.value = 1
+//        } else {
+//            tvFeedUnit.setText(R.string.feed_unit_metric_G95)
+//            a.putLog("set mm\\rev: G95")
+//            a.sendCommand("G95")
+//            viewModel.mG94G95.value = 0
+//        }
+//    }
 }

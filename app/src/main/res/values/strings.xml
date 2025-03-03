@@ -14,8 +14,8 @@
     <!-- Messages Preferences -->
 
     <!-- Sync Preferences -->
-    <string name="thread">РЕЗЬБА</string>
-    <string name="feed">ПОДАЧА</string>
+    <string name="thread">THREAD</string>
+    <string name="feed">FEED</string>
     <string name="sns">stop\n&amp;\nsave</string>
     <string name="stop">STOP</string>
     <string name="pitch_unit">mm</string>
@@ -44,5 +44,12 @@
         <item>NPT 3/4"</item>
         <item>NPT 1"</item>
     </string-array>
+
+    <string name="joystick_direction">Direction: %s</string>
+    <string name="joystick_position">Position, x: %.2f y: %.2f</string>
+    <string name="joystick_direction_type">Direction type</string>
+    <string name="joystick_primary_color">Primary color</string>
+    <string name="joystick_accent_color">Accent color</string>
+    <string name="joystick_drawer_type">Drawer type</string>
 
 </resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutJog"
+    android:layout_width="800dp"
+    android:layout_height="match_parent"
+    android:background="#C1292929"
+    android:backgroundTintMode="add"
+    android:clickable="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.0">
+
+    <view
+        android:id="@+id/knobZ"
+        class="com.example.myapplication.RotaryKnob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:initialValue="0"
+        app:knobDrawable="@drawable/ic_rotary_knob"
+        app:knobTopDrawable="@drawable/baseline_swap_horiz_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxValue="99"
+        app:minValue="0" />
+
+    <view
+        android:id="@+id/knob"
+        class="com.example.myapplication.RotaryKnob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:initialValue="0"
+        app:knobDrawable="@drawable/ic_rotary_knob"
+        app:knobTopDrawable="@drawable/baseline_swap_vert_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayoutJog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxValue="49"
+        app:minValue="0" />
+
+    <Button
+        android:id="@+id/btLeave"
+        android:layout_width="97dp"
+        android:layout_height="82dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hapticFeedbackEnabled="true"
+        android:insetTop="0dp"
+        android:text="Leave"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btJogX"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:hapticFeedbackEnabled="true"
+        android:insetTop="0dp"
+        android:text="X"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btJogZ"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:hapticFeedbackEnabled="true"
+        android:insetTop="0dp"
+        android:text="Z"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

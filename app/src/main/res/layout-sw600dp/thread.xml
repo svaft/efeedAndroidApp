@@ -11,20 +11,21 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="772dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="false"
         android:scaleType="fitStart"
         android:src="@drawable/thread2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/tvTaperValue"
-        android:layout_width="56dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="80dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="108dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:elevation="3dp"
@@ -50,6 +51,7 @@
         android:elevation="3dp"
         android:text="Taper:"
         android:textColor="@color/white"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/tvTaperValue"
         app:layout_constraintEnd_toStartOf="@+id/tvTaperValue"
         app:layout_constraintTop_toTopOf="@+id/tvTaperValue" />
@@ -61,6 +63,7 @@
         android:elevation="3dp"
         android:text="Preset "
         android:textColor="@color/white"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/spinner3" />
@@ -74,16 +77,17 @@
         android:text="Length:"
         android:textAlignment="center"
         android:textColor="@color/white"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/editTextThreadLength"
         app:layout_constraintEnd_toStartOf="@+id/editTextThreadLength"
         app:layout_constraintTop_toTopOf="@+id/editTextThreadLength" />
 
     <EditText
         android:id="@+id/editTextThreadLength"
-        android:layout_width="99dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="131dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="40dp"
         android:background="@color/white"
         android:cursorVisible="false"
         android:ems="10"
@@ -102,10 +106,10 @@
 
     <EditText
         android:id="@+id/tvScrewPitch"
-        android:layout_width="70dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="204dp"
+        android:layout_width="133dp"
+        android:layout_height="84dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="412dp"
         android:background="@color/white"
         android:cursorVisible="false"
         android:ems="10"
@@ -125,6 +129,7 @@
         android:id="@+id/tvScrewPitchUnit"
         android:layout_width="75dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:background="@android:drawable/btn_default_small"
         android:gravity="center_vertical"
         android:onClick="onClickUnit"
@@ -134,7 +139,8 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/tvScrewPitch"
         app:layout_constraintStart_toEndOf="@+id/tvScrewPitch"
-        app:layout_constraintTop_toTopOf="@+id/tvScrewPitch" />
+        app:layout_constraintTop_toTopOf="@+id/tvScrewPitch"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/editTextMultiThreadCount"
@@ -165,23 +171,24 @@
         android:textOn="LH"
         app:layout_constraintBottom_toBottomOf="@+id/toggleButton2"
         app:layout_constraintStart_toEndOf="@+id/toggleButton2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/toggleButton2" />
 
     <ToggleButton
         android:id="@+id/toggleButton2"
-        android:layout_width="96dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="ToggleButton"
         android:textOff="External"
         android:textOn="Internal"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextThreadLength"
         app:layout_constraintStart_toEndOf="@+id/editTextThreadLength"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/editTextThreadLength" />
 
     <Spinner
         android:id="@+id/spinner3"
-        android:layout_width="108dp"
-        android:layout_height="30dp"
+        android:layout_width="133dp"
+        android:layout_height="52dp"
         android:background="#FFFFFF"
         android:entries="@array/threads_array"
         app:layout_constraintBottom_toBottomOf="parent"

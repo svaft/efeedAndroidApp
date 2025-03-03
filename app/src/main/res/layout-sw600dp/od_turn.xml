@@ -12,10 +12,11 @@
 
     <ImageView
         android:id="@+id/imageInnerProgram"
-        android:layout_width="265dp"
-        android:layout_height="220dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="210dp"
         android:layout_weight="2"
-        android:adjustViewBounds="false"
+        android:adjustViewBounds="true"
         android:scaleType="fitStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +35,7 @@
 
         <TextView
             android:id="@+id/tvFilletR"
-            android:layout_width="81dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
             android:shadowColor="@color/black"
@@ -42,14 +43,14 @@
             android:text="Fillet radius:"
             android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/etFilletR"
             app:layout_constraintEnd_toEndOf="@+id/etFilletR" />
 
         <EditText
             android:id="@+id/etFilletR"
-            android:layout_width="70dp"
-            android:layout_height="25dp"
+            android:layout_width="163dp"
+            android:layout_height="53dp"
             android:background="#FFFFFF"
             android:cursorVisible="false"
             android:ems="10"
@@ -78,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.27" />
+            app:layout_constraintGuide_percent="0.3" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline4"
@@ -90,10 +91,10 @@
 
     <EditText
         android:id="@+id/etFeedLength"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="-20dp"
+        android:layout_width="217dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="-50dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:ems="10"
@@ -119,7 +120,7 @@
         android:shadowRadius="10"
         android:text="Length:"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageInnerProgram"
         app:layout_constraintEnd_toStartOf="@+id/etFeedLength"
         app:layout_constraintTop_toTopOf="@+id/etFeedLength" />
@@ -167,8 +168,8 @@
 
     <EditText
         android:id="@+id/etTaperValue"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
+        android:layout_width="128dp"
+        android:layout_height="71dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:elevation="3dp"
@@ -189,22 +190,22 @@
         android:id="@+id/tvTAPER"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:elevation="3dp"
         android:padding="2dp"
         android:shadowColor="@color/black"
         android:shadowRadius="10"
         android:text="Taper:"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/etTaperValue"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/swLoop"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="131dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="-8dp"
+        android:layout_marginTop="8dp"
         android:minHeight="48dp"
         android:shadowColor="@color/black"
         android:shadowRadius="10"
@@ -222,7 +223,7 @@
         android:shadowRadius="10"
         android:text="Feed:"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/etFeedValue"
         app:layout_constraintEnd_toStartOf="@+id/etFeedValue"
         app:layout_constraintTop_toTopOf="@+id/etFeedValue" />
@@ -232,8 +233,7 @@
         android:id="@+id/tvDOC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="92dp"
         android:padding="2dp"
         android:shadowColor="@color/black"
         android:shadowRadius="10"
@@ -245,8 +245,9 @@
 
     <EditText
         android:id="@+id/etDOC"
-        android:layout_width="70dp"
-        android:layout_height="38dp"
+        android:layout_width="123dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="76dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:ems="10"
@@ -265,9 +266,9 @@
 
     <EditText
         android:id="@+id/etFinishDOC"
-        android:layout_width="70dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="118dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="68dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:ems="10"
@@ -288,6 +289,7 @@
         android:id="@+id/tvFinalD"
         android:layout_width="wrap_content"
         android:layout_height="23dp"
+        android:layout_marginStart="60dp"
         android:padding="2dp"
         android:shadowColor="@color/black"
         android:shadowDx="0"
@@ -303,8 +305,8 @@
 
     <EditText
         android:id="@+id/etOuterCutTargetDiameter"
-        android:layout_width="80dp"
-        android:layout_height="38dp"
+        android:layout_width="198dp"
+        android:layout_height="56dp"
         android:background="#FFFFFF"
         android:cursorVisible="false"
         android:ems="10"
@@ -323,7 +325,7 @@
 
     <TextView
         android:id="@+id/tvFinishDOC"
-        android:layout_width="77dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="2dp"
         android:shadowColor="@color/black"
@@ -331,7 +333,7 @@
         android:text="Finish DOC:"
         android:textAlignment="viewEnd"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/etFinishDOC"
         app:layout_constraintEnd_toEndOf="@+id/etFinishDOC" />
 

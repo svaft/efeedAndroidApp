@@ -204,9 +204,8 @@
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
             android:layout_height="41dp"
-            android:layout_marginStart="4dp"
             app:layout_constraintEnd_toStartOf="@+id/btStateView"
-            app:layout_constraintStart_toEndOf="@+id/buttonTest"
+            app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
             app:layout_constraintTop_toTopOf="parent"
             app:tabIndicatorColor="#FF5722"
             app:tabMode="scrollable"
@@ -264,7 +263,7 @@
 
         <Button
             android:id="@+id/buttonTest"
-            android:layout_width="58dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="2dp"
             android:insetTop="0dp"
@@ -275,7 +274,8 @@
             app:layout_constraintTop_toTopOf="@+id/tvZLabelGlobal" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="350dp"
+            android:id="@+id/constraintLayout3"
+            android:layout_width="450dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLogMini"
@@ -283,12 +283,14 @@
 
             <ImageButton
                 android:id="@+id/btFastTakeAway"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@android:drawable/btn_default"
                 android:hapticFeedbackEnabled="true"
                 android:longClickable="true"
                 android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@+id/guideline98"
+                app:layout_constraintEnd_toEndOf="@+id/btFL"
                 app:layout_constraintStart_toStartOf="@+id/btFL"
                 app:layout_constraintTop_toBottomOf="@+id/btFL"
                 app:srcCompat="@drawable/ic_baseline_south_east_24"
@@ -296,13 +298,14 @@
 
             <ImageButton
                 android:id="@+id/btFB"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@android:drawable/btn_default"
                 android:hapticFeedbackEnabled="true"
                 android:rotation="0"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="@+id/btFastTakeAway"
+                app:layout_constraintEnd_toEndOf="@+id/btFF"
                 app:layout_constraintStart_toEndOf="@+id/btFastTakeAway"
                 app:layout_constraintTop_toTopOf="@+id/btFastTakeAway"
                 app:srcCompat="@drawable/ic_outline_fast_backward_24"
@@ -310,7 +313,7 @@
 
             <Button
                 android:id="@+id/btMain"
-                android:layout_width="157dp"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="3dp"
                 android:hapticFeedbackEnabled="true"
@@ -324,6 +327,7 @@
                 app:iconPadding="0dp"
                 app:iconTint="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/btFB"
+                app:layout_constraintEnd_toEndOf="@+id/btPause"
                 app:layout_constraintStart_toEndOf="@+id/btFB"
                 app:layout_constraintTop_toTopOf="@+id/btFB" />
 
@@ -339,21 +343,8 @@
                 app:srcCompat="@drawable/baseline_home_24" />
 
             <Button
-                android:id="@+id/btPause"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:hapticFeedbackEnabled="true"
-                android:insetTop="0dp"
-                android:onClick="onPauseClick"
-                android:text="II"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/btFR"
-                app:layout_constraintStart_toEndOf="@+id/btFR" />
-
-            <Button
                 android:id="@+id/btStop"
-                android:layout_width="70dp"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:background="#EF9A9A"
@@ -364,62 +355,127 @@
                 android:text="STOP -------- RESET"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/btPause"
-                app:layout_constraintEnd_toEndOf="@+id/btPause"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/btPause"
                 app:layout_constraintTop_toTopOf="@+id/btFR" />
 
+            <Button
+                android:id="@+id/btPause"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:hapticFeedbackEnabled="true"
+                android:insetTop="0dp"
+                android:onClick="onPauseClick"
+                android:text="II"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/btFR"
+                app:layout_constraintEnd_toEndOf="@+id/btStop"
+                app:layout_constraintStart_toEndOf="@+id/btFR" />
+
             <ImageButton
                 android:id="@+id/btFR"
-                android:layout_width="90dp"
-                android:layout_height="140dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@android:drawable/btn_default"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="fitCenter"
-                app:layout_constraintStart_toEndOf="@+id/btChamfer"
-                app:layout_constraintTop_toTopOf="@+id/btChamfer"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline6"
+                app:layout_constraintTop_toTopOf="@+id/btFL"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@android:drawable/ic_media_ff"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/btFF"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@android:drawable/btn_default"
                 android:hapticFeedbackEnabled="true"
                 android:rotation="0"
                 android:scaleType="fitCenter"
-                app:layout_constraintEnd_toEndOf="@+id/btChamfer"
-                app:layout_constraintTop_toBottomOf="@+id/btChamfer"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="@+id/guideline50"
                 app:srcCompat="@drawable/ic_outline_fast_forward_24"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/btFL"
-                android:layout_width="90dp"
-                android:layout_height="140dp"
-                android:layout_marginBottom="80dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@android:drawable/btn_default"
                 android:backgroundTintMode="src_in"
                 android:hapticFeedbackEnabled="true"
                 android:longClickable="true"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline50"
                 app:srcCompat="@android:drawable/ic_media_rew"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/btChamfer"
-                android:layout_width="90dp"
+                android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="32dp"
                 android:background="@android:drawable/btn_default"
                 android:hapticFeedbackEnabled="true"
                 android:rotation="0"
                 android:scaleType="centerCrop"
-                app:layout_constraintStart_toEndOf="@+id/btFL"
-                app:layout_constraintTop_toTopOf="@+id/btFL"
+                app:layout_constraintBottom_toTopOf="@+id/btFL"
+                app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_untitled__7_"
                 tools:ignore="SpeakableTextPresentCheck" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.25" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline98"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.98" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.74" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.75" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

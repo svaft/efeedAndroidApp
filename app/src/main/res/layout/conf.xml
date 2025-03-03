@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/tvReadLog"
-        android:layout_width="233dp"
+        android:layout_width="150dp"
         android:layout_height="0dp"
 
         android:backgroundTintMode="add"
@@ -22,5 +22,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="198dp"
+        android:layout_height="24dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/tvReadLog"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="191dp"
+        android:layout_height="37dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+    <com.example.myapplication.Joystick
+        android:id="@+id/joystick"
+        android:layout_width="229dp"
+        android:layout_height="237dp"
+        android:background="@drawable/bg_base"
+        app:layout_constraintStart_toEndOf="@+id/tvReadLog"
+        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <!-- You may use any View here. -->
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_stick" />
+
+    </com.example.myapplication.Joystick>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

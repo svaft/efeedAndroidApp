@@ -1,9 +1,18 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="150dp"
-    android:height="130dp"
+    android:height="150dp"
     android:viewportWidth="150"
-    android:viewportHeight="130">
+    android:viewportHeight="150">
+
+  <group
+      android:name="rotationGroup"
+      android:pivotX="0.0"
+      android:pivotY="0.0"
+      android:translateY="20"
+
+      android:scaleX="1">
+
   <path
       android:pathData="m112.11,11.04l2.69,0"
       android:strokeWidth="0.5"
@@ -453,4 +462,5 @@
       android:fillColor="#000000"
       android:strokeColor="#010101"
       android:strokeLineCap="butt"/>
+  </group>
 </vector>

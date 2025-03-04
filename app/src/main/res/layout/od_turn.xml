@@ -204,14 +204,31 @@
         android:id="@+id/swLoop"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:checked="false"
         android:minHeight="48dp"
         android:shadowColor="@color/black"
         android:shadowRadius="10"
         android:text="LOOP"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/etTaperValue"
-        app:layout_constraintTop_toBottomOf="@+id/etTaperValue" />
+        app:layout_constraintTop_toBottomOf="@+id/etTaperValue"
+        tools:checked="false" />
+
+    <Switch
+        android:id="@+id/swSync"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="40dp"
+        android:minHeight="48dp"
+        android:shadowColor="@color/black"
+        android:shadowRadius="10"
+        android:text="SYNC"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/etTaperValue"
+        app:layout_constraintTop_toBottomOf="@+id/etTaperValue"
+        tools:checked="true" />
 
     <TextView
         android:id="@+id/tvFEED"
@@ -233,7 +250,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:padding="2dp"
         android:shadowColor="@color/black"
         android:shadowRadius="10"
@@ -486,7 +503,7 @@
                 android:background="@android:drawable/btn_default_small"
                 android:clickable="true"
                 android:hapticFeedbackEnabled="true"
-                android:text="1.0"
+                android:text="1.5"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold"

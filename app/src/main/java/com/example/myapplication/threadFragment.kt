@@ -15,14 +15,14 @@ import com.example.myapplication.databinding.ThreadBinding
 import java.util.Locale
 
 
-class threadFragment : Fragment(), UpdateableFragment  {
+class threadFragment : odFragment(0), UpdateableFragment  {
     lateinit var v: View
     private val viewModel: MyViewModel by activityViewModels()
 //    private lateinit var viewModel: MyViewModel // by activityViewModels()
+    override var mMainText =  "THREAD" //getString(R.string.thread)
 
     private var _binding: ThreadBinding? = null
     private val b get() = _binding!!
-    private lateinit var a: MainActivity
     private var mInit: Int = 0
 
     override fun onCreateView(
@@ -33,8 +33,6 @@ class threadFragment : Fragment(), UpdateableFragment  {
         _binding = ThreadBinding.inflate(inflater, container, false)
         v = b.root
         mInit = 1
-//        viewModel = activityViewModels()
-//        v=inflater.inflate(R.layout.thread, container, false)
 
         a = activity as MainActivity
         b.spinner3.apply {
@@ -59,79 +57,32 @@ class threadFragment : Fragment(), UpdateableFragment  {
         b.tvScrewPitchUnit.setOnClickListener {
             onClickUnit(it)
         }
+        b.extInt.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.internalCut.value = 1
+                mOd = 1// internal
+            } else {
+                viewModel.internalCut.value = 0
+                mOd = 0 // external
+            }
+        }
         return v
     }
 
 
     override fun update() {
-        if(::a.isInitialized){
-            a.b.btMain.isEnabled = true
-            a.b.btMain.setText(R.string.thread)
-        }
+        super.update()
         viewModel.threadMode.value = true
     }
-
-    override fun programMainLP() {
-        a.putLog("reset record")
-        a.b.viewPager.setPagingEnabled(true)
-        a.enableTabs()
-//        mfUpdIf.update()
-        a.cmdRecorded = false
-        a.cmdStarted = false
-        a.sendCommand("!S")
-        a.b.btMain.setBackgroundColor(Color.GREEN)
-        a.b.btPause.setBackgroundColor(Color.GREEN)
-        a.pauseProgramFlag = false
-    }
-
-    override fun programMainClick() {
-
-//
-//        if (a.cmdRecorded) {
-//            if (a.cmdStarted) {
-//                a.putLog("stop current move")
-//                a.sendCommand("!S") // stop current move
-//            } else {
-//                a.cmdStarted = true
-//                a.putLog("repeat or zero")
-//                a.sendCommand("!3") //repeat last command or quick move to initial position
-//                a.b.btMain.setText(R.string.stop)
-//            }
-//        } else { // command not recorded yet
-//            if (a.cmdStarted) { // command started but not recorded for future replay
-//                a.cmdStarted = false
-//                a.cmdRecorded = true
-//                a.b.btMain.setBackgroundColor(Color.RED)
-//                a.putLog("stop&save last move")
-//                a.sendCommand("!2")
-//                a.pauseProgramFlag = true
-//                a.b.btPause.setBackgroundColor(Color.RED)
-//
-////                        if (viewModel.threadMode.value == true)
-////                            b.btMain.setText(R.string.thread)
-////                        else
-////                            b.btMain.setText(R.string.feed)
-//            }
-//            else { // build command with active TAB config and send it to lathe
-//                a.mfUpdIf.update()
-//                a.b.viewPager.setPagingEnabled(false)
-//                a.disableUnselectedTabs()
-//
-//                val cmd = buildCmd()
-//                a.sendCommand(cmd)
-//                a.cmdStarted = true
-//                a.putLog(cmd)
-//                a.b.btMain.setText(R.string.sns)
-//            }
-//        }
-    }
-
-
-
 
 
 
     override fun buildCmd(): String {
+        if(viewModel.internalCut.value == 0){
+            a.sendCommand("!O")
+        } else {
+            a.sendCommand("!I")
+        }
         val minus =
             if (viewModel.feedDirection.value == Direction.Right || viewModel.feedDirection.value == Direction.Backward) "" else "-"
         val gCmd = "G33"
@@ -164,16 +115,12 @@ class threadFragment : Fragment(), UpdateableFragment  {
         return out
     }
 
-    override fun processProgram() {
-
-    }
-
     private fun onClickUnit(v: View) {
         (v as TextView).text = if(viewModel.mMetricUnit.value == true) getString(R.string.inch) else getString(R.string.metric)
         viewModel.mMetricUnit.value = !(viewModel.mMetricUnit.value)!!
     }
 
     override fun fabText(): String {
-        return "Thread"
+        return mMainText
     }
 }

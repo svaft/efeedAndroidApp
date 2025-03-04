@@ -169,12 +169,12 @@
         android:text="ToggleButton"
         android:textOff="RH"
         android:textOn="LH"
-        app:layout_constraintBottom_toBottomOf="@+id/toggleButton2"
-        app:layout_constraintStart_toEndOf="@+id/toggleButton2"
-        app:layout_constraintTop_toTopOf="@+id/toggleButton2" />
+        app:layout_constraintBottom_toBottomOf="@+id/extInt"
+        app:layout_constraintStart_toEndOf="@+id/extInt"
+        app:layout_constraintTop_toTopOf="@+id/extInt" />
 
     <ToggleButton
-        android:id="@+id/toggleButton2"
+        android:id="@+id/extInt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

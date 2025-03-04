@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -13,6 +15,7 @@ import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.myapplication.databinding.OdTurnBinding
@@ -25,8 +28,8 @@ import java.util.Locale
 
 enum class fsm { Reset, Initial, StartedNotRecorded, RecordedPaused, RecordedPlayed }
 
-class odFragment(i: Int) : Fragment(), UpdateableFragment {
-    private var mOd = i
+open class odFragment(i: Int) : Fragment(), UpdateableFragment {
+     var mOd = i
     private var str = "false"
 
     private lateinit var tvFeedUnit: TextView
@@ -38,14 +41,14 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
 
     var mFeed94: String = "600.00"
     var mFeed95: String = "0.1"
-
+    open var mMainText =  "FEED" //getString(R.string.feed)
     private var outerCutTargetDiameterMod: Boolean = false
 
     private val viewModel: MyViewModel by activityViewModels()
     private var _binding: OdTurnBinding? = null
     private val b get() = _binding!!
 
-    private lateinit var a: MainActivity
+    lateinit var a: MainActivity
     private lateinit var v: View
 
     override fun onCreateView(
@@ -101,10 +104,13 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
                 a.putLog("try to set mm\\min: G94")
                 a.sendCommand("G94")
  //               viewModel.mG94G95.value = 1
+                b.swSync!!.visibility = INVISIBLE
             } else {
                 tvFeedUnit.setText(R.string.feed_unit_metric_G95)
                 a.putLog("try to set mm\\rev: G95")
                 a.sendCommand("G95")
+                b.swSync!!.visibility = VISIBLE
+
 //                viewModel.mG94G95.value = 0
             }
 //            changeFeedUnit()
@@ -155,19 +161,20 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
 
     override fun update() {
         a.b.btMain.isEnabled = true
-        a.b.btMain.setText(R.string.feed)
+        a.b.btMain.setText(mMainText)
         viewModel.threadMode.value = false
 
         if(mOd == 0 ) {
             if(viewModel.internalCut.value !=0)
                 a.sendCommand("!O")
         } else {
-            if(viewModel.internalCut.value !=1)
-            a.sendCommand("!I")
+            if(viewModel.internalCut.value !=1) {
+                a.sendCommand("!I")
+            }
         }
     }
 
-    private var fsmState: fsm = fsm.Initial
+    var fsmState: fsm = fsm.Initial
 
     override fun programMainLP() {
 
@@ -177,14 +184,14 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
         a.sendCommand("!S")
     }
 
-    fun updateUIbyFsmState(ma: MainActivity){
+    open fun updateUIbyFsmState(ma: MainActivity){
         when(fsmState) {
             fsm.Reset -> {
                 ma.b.viewPager.setPagingEnabled(true)
                 ma.enableTabs()
                 ma.b.btMain.setBackgroundColor(Color.GREEN)
                 ma.b.btPause.setBackgroundColor(Color.GREEN)
-                ma.b.btMain.setText(R.string.feed)
+                ma.b.btMain.text = mMainText
                 a.updateMainIcon()
             }
             fsm.Initial ->{
@@ -192,7 +199,7 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
                 ma.enableTabs()
                 ma.b.btMain.setBackgroundColor(Color.GREEN)
                 ma.b.btPause.setBackgroundColor(Color.GREEN)
-                ma.b.btMain.setText(R.string.feed)
+                ma.b.btMain.text = mMainText
                 a.updateMainIcon()
             }
             fsm.StartedNotRecorded ->{
@@ -205,10 +212,10 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
             fsm.RecordedPaused ->{
                 ma.b.btMain.setBackgroundColor(Color.RED)
                 ma.b.btPause.setBackgroundColor(Color.RED)
-                ma.b.btMain.setText(R.string.feed)
+                ma.b.btMain.text = mMainText
             }
             fsm.RecordedPlayed -> {
-                ma.b.btMain.setText(R.string.feed)
+                ma.b.btMain.text = mMainText
             }
         }
     }
@@ -273,7 +280,7 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
 
 
     override fun fabText(): String {
-        return "Feed"
+        return mMainText
     }
 
     override fun buildCmd(): String {
@@ -284,12 +291,17 @@ class odFragment(i: Int) : Fragment(), UpdateableFragment {
         }
         val minus =
             if (viewModel.feedDirection.value == Direction.Right || viewModel.feedDirection.value == Direction.Backward) "" else "-"
-        val gCmd = "G01"
+        var gCmd = "G01"
+        var feedName = "F"
+        if(viewModel.mG94G95.value == 0 && b.swSync?.isChecked == true){
+            gCmd = "G33"
+            feedName = "K"
+        }
         var gTaper = ""
         val axis = if (viewModel.feedDirection.value == Direction.Right || viewModel.feedDirection.value == Direction.Left) " Z" else " X"
         val tvTaperValue = etTaperValue.text.toString().toFloat()
 
-        val gSub: String = "F" + etFeedValue.text
+        val gSub: String = feedName + etFeedValue.text
         val gLength: String = etFeedLength.text.toString()
         if(tvTaperValue > 0){
             var targetTaperFloat = tvTaperValue*gLength.toFloat()///2 // controller use diameter mode for X axis so no need to divide by 2 here
